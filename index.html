@@ -27,13 +27,7 @@ window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXB
 body{margin:0;font-family:'Inter',sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;}
 input,select,button{font-family:'Inter',sans-serif;}
 ::placeholder{color:var(--gray-300);}
-.weekly-line{stroke-dasharray:760;stroke-dashoffset:760;animation:drawWeeklyLine .9s ease-out forwards;}
-.weekly-area{opacity:0;animation:fadeWeeklyArea .75s ease-out .25s forwards;}
-.weekly-point{opacity:0;transform-box:fill-box;transform-origin:center;animation:popWeeklyPoint .32s ease-out forwards;}
 .metric-number{animation:metricPulse .36s ease-out both;}
-@keyframes drawWeeklyLine{to{stroke-dashoffset:0;}}
-@keyframes fadeWeeklyArea{to{opacity:1;}}
-@keyframes popWeeklyPoint{from{opacity:0;transform:scale(.65);}to{opacity:1;transform:scale(1);}}
 @keyframes metricPulse{from{opacity:.35;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
 </style>
 </helmet>
@@ -132,25 +126,29 @@ input,select,button{font-family:'Inter',sans-serif;}
 
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:16px;align-items:start;">
             <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px;">
-              <div>
-                <div style="font-weight:700;font-size:17px;">Clientes com mais LPs</div>
-                <div style="font-size:13px;color:var(--gray-500);margin-top:2px;">Ranking por volume cadastrado</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+                <div>
+                  <div style="font-weight:700;font-size:17px;">Últimos clientes</div>
+                  <div style="font-size:13px;color:var(--gray-500);margin-top:2px;">Cadastros mais recentes</div>
+                </div>
+                <div style="font-size:12px;color:var(--gray-500);">{{ totalClients }} no total</div>
               </div>
-              <sc-if value="{{ hasTopClientRows }}" hint-placeholder-val="{{ true }}">
+              <sc-if value="{{ hasRecentClients }}" hint-placeholder-val="{{ true }}">
                 <div style="display:flex;flex-direction:column;gap:10px;">
-                  <sc-for list="{{ topClientRows }}" as="c" hint-placeholder-count="4">
-                    <div onClick="{{ c.onSelect }}" style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border:1px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;" style-hover="background:var(--bg);">
+                  <sc-for list="{{ recentClients }}" as="c" hint-placeholder-count="5">
+                    <div onClick="{{ c.onSelect }}" style="display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;border:1px solid var(--border);border-radius:10px;padding:12px;cursor:pointer;" style-hover="background:var(--bg);">
                       <div style="min-width:0;">
-                        <div style="font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ c.nome }}</div>
-                        <div style="font-size:12px;color:var(--gray-500);">{{ c.activeLpCount }} ativas</div>
+                        <div style="font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ c.nome }}</div>
+                        <div style="font-size:12px;color:var(--gray-500);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ c.nome_contato }}</div>
                       </div>
-                      <div style="font-size:12px;font-weight:700;background:var(--teal-tint);color:var(--teal-dark);border-radius:20px;padding:5px 10px;">{{ c.lpCount }} LPs</div>
+                      <div style="font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;background:{{ c.statusBg }};color:{{ c.statusFg }};">{{ c.ativoLabel }}</div>
+                      <div style="font-size:12px;color:var(--gray-500);">{{ c.created_fmt }}</div>
                     </div>
                   </sc-for>
                 </div>
               </sc-if>
-              <sc-if value="{{ noTopClientRows }}">
-                <div style="border:1px dashed var(--border);border-radius:12px;padding:18px;font-size:13px;color:var(--gray-500);">Cadastre LPs para montar o ranking automaticamente.</div>
+              <sc-if value="{{ noRecentClients }}">
+                <div style="border:1px dashed var(--border);border-radius:12px;padding:18px;font-size:13px;color:var(--gray-500);">Nenhum cliente encontrado. Cadastre o primeiro cliente para começar.</div>
               </sc-if>
             </div>
 
@@ -182,34 +180,6 @@ input,select,button{font-family:'Inter',sans-serif;}
             </div>
 
           </div>
-
-          <sc-if value="{{ showWeeklyChart }}" hint-placeholder-val="{{ true }}">
-            <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;">
-              <div style="font-weight:600;font-size:15px;margin-bottom:18px;">LPs cadastradas por semana</div>
-              <div style="width:100%;height:190px;position:relative;">
-                <svg viewBox="0 0 600 170" preserveAspectRatio="none" style="width:100%;height:170px;display:block;overflow:visible;">
-                  <defs>
-                    <linearGradient id="weeklyAreaGradient" x1="0" x2="0" y1="0" y2="1">
-                      <stop offset="0%" stop-color="var(--teal)" stop-opacity=".22"></stop>
-                      <stop offset="100%" stop-color="var(--teal)" stop-opacity="0"></stop>
-                    </linearGradient>
-                  </defs>
-                  <path d="M30 138 H570" stroke="var(--border)" stroke-width="1" fill="none"></path>
-                  <path d="M30 94 H570" stroke="var(--border)" stroke-width="1" fill="none" opacity=".65"></path>
-                  <path d="M30 50 H570" stroke="var(--border)" stroke-width="1" fill="none" opacity=".45"></path>
-                  <polygon points="{{ weekAreaPoints }}" fill="url(#weeklyAreaGradient)" class="weekly-area"></polygon>
-                  <polyline points="{{ weekLinePoints }}" fill="none" stroke="var(--teal)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="weekly-line"></polyline>
-                  <sc-for list="{{ weekBuckets }}" as="wk" hint-placeholder-count="6">
-                    <g>
-                      <circle cx="{{ wk.x }}" cy="{{ wk.y }}" r="7" fill="#ffffff" stroke="var(--teal)" stroke-width="4" class="weekly-point" style="animation-delay:{{ wk.delay }}ms;"></circle>
-                      <text x="{{ wk.x }}" y="{{ wk.valueY }}" text-anchor="middle" fill="var(--teal-dark)" font-size="12" font-weight="700">{{ wk.count }}</text>
-                      <text x="{{ wk.x }}" y="162" text-anchor="middle" fill="var(--gray-500)" font-size="11">{{ wk.label }}</text>
-                    </g>
-                  </sc-for>
-                </svg>
-              </div>
-            </div>
-          </sc-if>
 
           <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;">
             <div style="font-weight:600;font-size:15px;margin-bottom:14px;">Buscar cliente</div>
@@ -444,7 +414,7 @@ input,select,button{font-family:'Inter',sans-serif;}
 </div>
 
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{},&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#00877f&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#00877f&quot;,&quot;#66337f&quot;,&quot;#f37b4d&quot;]},&quot;showWeeklyChart&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Dashboard&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{},&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#00877f&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#00877f&quot;,&quot;#66337f&quot;,&quot;#f37b4d&quot;]}}">
 class Component extends DCLogic {
   state = {
     screen: 'login',
@@ -888,29 +858,6 @@ class Component extends DCLogic {
     this.showToast('Usuario excluido.');
   };
 
-  weeklyBuckets(){
-    const lps = this.state.lps;
-    const today = new Date();
-    const buckets = [];
-    for(let i=5;i>=0;i--){
-      const start = new Date(today); start.setHours(0,0,0,0);
-      start.setDate(start.getDate() - start.getDay() - 7*i + 1);
-      const end = new Date(start); end.setDate(end.getDate()+7);
-      const count = lps.filter(l=>{ const d=new Date(l.created_at+'T00:00:00'); return d>=start && d<end; }).length;
-      buckets.push({label:(start.getMonth()+1)+'/'+start.getDate(), count});
-    }
-    const max = Math.max(1, ...buckets.map(b=>b.count));
-    const chartWidth = 540;
-    const left = 30;
-    const top = 28;
-    const bottom = 138;
-    return buckets.map((b,i)=>{
-      const x = left + (buckets.length === 1 ? chartWidth / 2 : (chartWidth / (buckets.length - 1)) * i);
-      const y = bottom - ((b.count / max) * (bottom - top));
-      return {...b, x:Math.round(x), y:Math.round(y), valueY:Math.max(16, Math.round(y - 14)), delay:350 + (i * 90)};
-    });
-  }
-
   mapClient(c){
     const clientLps = this.state.lps.filter(l=>l.cliente_id===c.id);
     return {...c,
@@ -947,13 +894,6 @@ class Component extends DCLogic {
     const user = s.currentUser;
     const clientById = {};
     s.clients.forEach(c=>clientById[c.id]=c);
-    const lpCountsByClient = {};
-    const activeLpCountsByClient = {};
-    s.clients.forEach(c=>{ lpCountsByClient[c.id]=0; activeLpCountsByClient[c.id]=0; });
-    s.lps.forEach(l=>{
-      lpCountsByClient[l.cliente_id] = (lpCountsByClient[l.cliente_id] || 0) + 1;
-      if(l.status==='ativo') activeLpCountsByClient[l.cliente_id] = (activeLpCountsByClient[l.cliente_id] || 0) + 1;
-    });
 
     const dashSearch = s.searchTerm.trim().toLowerCase();
     const dashResults = dashSearch ? s.clients.filter(c=>c.nome.toLowerCase().includes(dashSearch)).slice(0,6).map(c=>this.mapClient(c)) : [];
@@ -968,19 +908,16 @@ class Component extends DCLogic {
     const inactiveLpsCount = s.lps.filter(l=>l.status==='inativo').length;
     const gtmClientsCount = s.clients.filter(c=>(c.google_tag_manager || '').trim()).length;
     const dashboardCounts = s.dashboardCounts || {};
-    const topClientRows = s.clients
-      .map(c=>({...this.mapClient(c), lpCount:lpCountsByClient[c.id] || 0, activeLpCount:activeLpCountsByClient[c.id] || 0}))
-      .filter(c=>c.lpCount>0)
-      .sort((a,b)=>b.lpCount-a.lpCount || a.nome.localeCompare(b.nome))
-      .slice(0,5);
+    const recentClients = s.clients
+      .slice()
+      .sort((a,b)=>b.created_at.localeCompare(a.created_at))
+      .slice(0,5)
+      .map(c=>this.mapClient(c));
     const recentLps = s.lps
       .slice()
       .sort((a,b)=>b.created_at.localeCompare(a.created_at))
       .slice(0,5)
       .map(l=>({...this.mapLp(l), clientName: clientById[l.cliente_id] ? clientById[l.cliente_id].nome : 'Cliente removido', onSelectClient:()=>this.selectClient(l.cliente_id)}));
-    const weekBuckets = this.weeklyBuckets();
-    const weekLinePoints = weekBuckets.map(w=>`${w.x},${w.y}`).join(' ');
-    const weekAreaPoints = weekBuckets.length ? `30,138 ${weekLinePoints} 570,138` : '';
 
     const navBase = 'display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;border:none;background:transparent;font-size:14px;font-weight:500;color:var(--gray-700);cursor:pointer;text-align:left;width:100%;';
     const navActive = 'background:var(--teal-tint);color:var(--teal-dark);font-weight:600;';
@@ -1000,7 +937,6 @@ class Component extends DCLogic {
 
     return {
       accentColor: this.props.accentColor ?? '#00877f',
-      showWeeklyChart: this.props.showWeeklyChart ?? true,
 
       isLoggedIn: !!user, loggedOut: !user, isAdminUser: this.isAdmin(),
       currentUser: user ? {...user, roleLabel: user.role==='admin'?'Administrador':'Mídia'} : null,
@@ -1023,9 +959,8 @@ class Component extends DCLogic {
       metricGtmClients: dashboardCounts.gtmClients,
       sellbotClients: s.clients.filter(c=>c.sellbot).length,
       avgLpsPerClient: s.clients.length ? (s.lps.length / s.clients.length).toFixed(1) : '0.0',
-      topClientRows, hasTopClientRows: topClientRows.length>0, noTopClientRows: topClientRows.length===0,
+      recentClients, hasRecentClients: recentClients.length>0, noRecentClients: recentClients.length===0,
       recentLps, hasRecentLps: recentLps.length>0, noRecentLps: recentLps.length===0,
-      weekBuckets, weekLinePoints, weekAreaPoints,
 
       searchTerm: s.searchTerm, setSearchTerm: (e)=>this.setState({searchTerm:e.target.value}),
       dashResults, hasDashSearch: !!dashSearch, hasDashResults: dashResults.length>0,
