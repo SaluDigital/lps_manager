@@ -122,6 +122,58 @@ input,select,button{font-family:'Inter',sans-serif;}
             </div>
           </div>
 
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;align-items:stretch;">
+            <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:18px;">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
+                <div>
+                  <div style="font-weight:700;font-size:17px;">Saúde da carteira</div>
+                  <div style="font-size:13px;color:var(--gray-500);margin-top:2px;">Acompanhamento rápido de cobertura e ativação</div>
+                </div>
+                <div style="font-size:12px;font-weight:700;color:var(--teal-dark);background:var(--teal-tint);border-radius:20px;padding:6px 10px;">{{ activeLpsPct }}% ativas</div>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;">
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <div style="font-size:12px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;">Clientes com LP</div>
+                  <div style="font-family:'Poppins',sans-serif;font-size:24px;font-weight:700;">{{ clientsWithLpCount }}</div>
+                  <div style="height:8px;background:var(--bg);border-radius:999px;overflow:hidden;"><div style="height:100%;width:{{ clientsWithLpPct }}%;background:var(--teal);border-radius:999px;"></div></div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <div style="font-size:12px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;">Sem LP</div>
+                  <div style="font-family:'Poppins',sans-serif;font-size:24px;font-weight:700;">{{ clientsWithoutLpCount }}</div>
+                  <div style="height:8px;background:var(--bg);border-radius:999px;overflow:hidden;"><div style="height:100%;width:{{ clientsWithoutLpPct }}%;background:var(--orange);border-radius:999px;"></div></div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <div style="font-size:12px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;">GTM configurado</div>
+                  <div style="font-family:'Poppins',sans-serif;font-size:24px;font-weight:700;">{{ gtmClients }}</div>
+                  <div style="height:8px;background:var(--bg);border-radius:999px;overflow:hidden;"><div style="height:100%;width:{{ gtmClientsPct }}%;background:var(--purple);border-radius:999px;"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px;">
+              <div>
+                <div style="font-weight:700;font-size:17px;">Clientes com mais LPs</div>
+                <div style="font-size:13px;color:var(--gray-500);margin-top:2px;">Ranking por volume cadastrado</div>
+              </div>
+              <sc-if value="{{ hasTopClientRows }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                  <sc-for list="{{ topClientRows }}" as="c" hint-placeholder-count="4">
+                    <div onClick="{{ c.onSelect }}" style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border:1px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;" style-hover="background:var(--bg);">
+                      <div style="min-width:0;">
+                        <div style="font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ c.nome_divulgacao }}</div>
+                        <div style="font-size:12px;color:var(--gray-500);">{{ c.activeLpCount }} ativas</div>
+                      </div>
+                      <div style="font-size:12px;font-weight:700;background:var(--teal-tint);color:var(--teal-dark);border-radius:20px;padding:5px 10px;">{{ c.lpCount }} LPs</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{ noTopClientRows }}">
+                <div style="border:1px dashed var(--border);border-radius:12px;padding:18px;font-size:13px;color:var(--gray-500);">Cadastre LPs para montar o ranking automaticamente.</div>
+              </sc-if>
+            </div>
+          </div>
+
           <sc-if value="{{ showWeeklyChart }}" hint-placeholder-val="{{ true }}">
             <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;">
               <div style="font-weight:600;font-size:15px;margin-bottom:18px;">LPs cadastradas por semana</div>
@@ -137,6 +189,58 @@ input,select,button{font-family:'Inter',sans-serif;}
             </div>
           </sc-if>
 
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;align-items:start;">
+            <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+                <div>
+                  <div style="font-weight:700;font-size:17px;">Últimas landing pages</div>
+                  <div style="font-size:13px;color:var(--gray-500);margin-top:2px;">Cadastros mais recentes</div>
+                </div>
+                <div style="font-size:12px;color:var(--gray-500);">{{ totalLps }} no total</div>
+              </div>
+              <sc-if value="{{ hasRecentLps }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                  <sc-for list="{{ recentLps }}" as="l" hint-placeholder-count="5">
+                    <div onClick="{{ l.onSelectClient }}" style="display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;border:1px solid var(--border);border-radius:10px;padding:12px;cursor:pointer;" style-hover="background:var(--bg);">
+                      <div style="min-width:0;">
+                        <div style="font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ l.nome }}</div>
+                        <div style="font-size:12px;color:var(--gray-500);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ l.clientName }}</div>
+                      </div>
+                      <div style="font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;background:{{ l.statusBg }};color:{{ l.statusFg }};">{{ l.statusLabel }}</div>
+                      <div style="font-size:12px;color:var(--gray-500);">{{ l.created_fmt }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{ noRecentLps }}">
+                <div style="border:1px dashed var(--border);border-radius:12px;padding:18px;font-size:13px;color:var(--gray-500);">Nenhuma LP encontrada. Abra um cliente e cadastre a primeira landing page.</div>
+              </sc-if>
+            </div>
+
+            <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px;">
+              <div>
+                <div style="font-weight:700;font-size:17px;">Atenções</div>
+                <div style="font-size:13px;color:var(--gray-500);margin-top:2px;">Clientes que podem precisar de ação</div>
+              </div>
+              <sc-if value="{{ hasClientsWithoutLp }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                  <sc-for list="{{ clientsWithoutLpRows }}" as="c" hint-placeholder-count="4">
+                    <div onClick="{{ c.onSelect }}" style="display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;" style-hover="background:var(--bg);">
+                      <div style="min-width:0;">
+                        <div style="font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ c.nome_divulgacao }}</div>
+                        <div style="font-size:12px;color:var(--gray-500);">Sem LP cadastrada</div>
+                      </div>
+                      <div style="font-size:12px;font-weight:700;color:var(--orange);">Ver</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{ noClientsWithoutLp }}">
+                <div style="border:1px solid var(--teal-tint);background:var(--teal-tint);color:var(--teal-dark);border-radius:12px;padding:14px;font-size:13px;font-weight:600;">Todos os clientes têm ao menos uma LP.</div>
+              </sc-if>
+            </div>
+          </div>
+
           <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;">
             <div style="font-weight:600;font-size:15px;margin-bottom:14px;">Buscar cliente</div>
             <input type="text" value="{{ searchTerm }}" onChange="{{ setSearchTerm }}" placeholder="Digite o nome do cliente..." style="width:100%;max-width:420px;padding:11px 14px;border:1px solid var(--border);border-radius:10px;font-size:14px;margin-bottom:14px;outline:none;">
@@ -149,7 +253,10 @@ input,select,button{font-family:'Inter',sans-serif;}
                         <div style="font-weight:600;font-size:14px;">{{ c.nome }}</div>
                         <div style="font-size:12px;color:var(--gray-500);">{{ c.nome_divulgacao }}</div>
                       </div>
-                      <div style="font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;background:{{ c.statusBg }};color:{{ c.statusFg }};">{{ c.ativoLabel }}</div>
+                      <div style="display:flex;align-items:center;gap:8px;">
+                        <div style="font-size:12px;color:var(--gray-500);">{{ c.lpCount }} LPs</div>
+                        <div style="font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;background:{{ c.statusBg }};color:{{ c.statusFg }};">{{ c.ativoLabel }}</div>
+                      </div>
                     </div>
                   </sc-for>
                 </div>
@@ -788,10 +895,13 @@ class Component extends DCLogic {
   }
 
   mapClient(c){
+    const clientLps = this.state.lps.filter(l=>l.cliente_id===c.id);
     return {...c,
       sellbotLabel: c.sellbot?'Sim':'Não', ativoLabel: c.ativo?'Ativo':'Inativo',
       whatsapp: this.formatWhatsApp(c.whatsapp),
       googleTagManagerLabel: c.google_tag_manager || '—',
+      lpCount: clientLps.length,
+      activeLpCount: clientLps.filter(l=>l.status==='ativo').length,
       statusBg: c.ativo?'#dff6f2':'#fbeae8', statusFg: c.ativo?'#00877f':'#c0392b',
       created_fmt: this.formatDate(c.created_at),
       onSelect: ()=>this.selectClient(c.id), onEdit: ()=>this.openEditClient(c), onDelete: ()=>this.deleteClient(c.id),
@@ -820,6 +930,13 @@ class Component extends DCLogic {
     const user = s.currentUser;
     const clientById = {};
     s.clients.forEach(c=>clientById[c.id]=c);
+    const lpCountsByClient = {};
+    const activeLpCountsByClient = {};
+    s.clients.forEach(c=>{ lpCountsByClient[c.id]=0; activeLpCountsByClient[c.id]=0; });
+    s.lps.forEach(l=>{
+      lpCountsByClient[l.cliente_id] = (lpCountsByClient[l.cliente_id] || 0) + 1;
+      if(l.status==='ativo') activeLpCountsByClient[l.cliente_id] = (activeLpCountsByClient[l.cliente_id] || 0) + 1;
+    });
 
     const dashSearch = s.searchTerm.trim().toLowerCase();
     const dashResults = dashSearch ? s.clients.filter(c=>c.nome.toLowerCase().includes(dashSearch)||c.nome_divulgacao.toLowerCase().includes(dashSearch)).slice(0,6).map(c=>this.mapClient(c)) : [];
@@ -830,6 +947,21 @@ class Component extends DCLogic {
     const rawSelectedClient = s.selectedClientId ? clientById[s.selectedClientId] : null;
     const selectedClient = rawSelectedClient ? this.mapClient(rawSelectedClient) : null;
     const selectedClientLps = selectedClient ? s.lps.filter(l=>l.cliente_id===selectedClient.id).sort((a,b)=>b.created_at.localeCompare(a.created_at)).map(l=>this.mapLp(l)) : [];
+    const activeLpsCount = s.lps.filter(l=>l.status==='ativo').length;
+    const inactiveLpsCount = s.lps.filter(l=>l.status==='inativo').length;
+    const clientsWithLpCount = s.clients.filter(c=>(lpCountsByClient[c.id] || 0)>0).length;
+    const clientsWithoutLpRows = s.clients.filter(c=>(lpCountsByClient[c.id] || 0)===0).slice(0,5).map(c=>this.mapClient(c));
+    const pct = (part,total) => total ? Math.round((part/total)*100) : 0;
+    const topClientRows = s.clients
+      .map(c=>({...this.mapClient(c), lpCount:lpCountsByClient[c.id] || 0, activeLpCount:activeLpCountsByClient[c.id] || 0}))
+      .filter(c=>c.lpCount>0)
+      .sort((a,b)=>b.lpCount-a.lpCount || a.nome.localeCompare(b.nome))
+      .slice(0,5);
+    const recentLps = s.lps
+      .slice()
+      .sort((a,b)=>b.created_at.localeCompare(a.created_at))
+      .slice(0,5)
+      .map(l=>({...this.mapLp(l), clientName: clientById[l.cliente_id] ? clientById[l.cliente_id].nome_divulgacao : 'Cliente removido', onSelectClient:()=>this.selectClient(l.cliente_id)}));
 
     const navBase = 'display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;border:none;background:transparent;font-size:14px;font-weight:500;color:var(--gray-700);cursor:pointer;text-align:left;width:100%;';
     const navActive = 'background:var(--teal-tint);color:var(--teal-dark);font-weight:600;';
@@ -862,8 +994,18 @@ class Component extends DCLogic {
       gotoDashboard: ()=>this.goto('dashboard'), gotoClients: ()=>this.goto('clients'), gotoUsers: ()=>this.goto('users'),
       navDashboardStyle: navStyle(s.screen==='dashboard'), navClientsStyle: navStyle(s.screen==='clients'), navUsersStyle: navStyle(s.screen==='users'),
 
-      totalLps: s.lps.length, activeLps: s.lps.filter(l=>l.status==='ativo').length, inactiveLps: s.lps.filter(l=>l.status==='inativo').length,
+      totalLps: s.lps.length, activeLps: activeLpsCount, inactiveLps: inactiveLpsCount,
       totalClients: s.clients.length, activeClients: s.clients.filter(c=>c.ativo).length,
+      activeLpsPct: pct(activeLpsCount, s.lps.length), inactiveLpsPct: pct(inactiveLpsCount, s.lps.length),
+      clientsWithLpCount, clientsWithLpPct: pct(clientsWithLpCount, s.clients.length),
+      clientsWithoutLpCount: s.clients.length - clientsWithLpCount, clientsWithoutLpPct: pct(s.clients.length - clientsWithLpCount, s.clients.length),
+      sellbotClients: s.clients.filter(c=>c.sellbot).length,
+      gtmClients: s.clients.filter(c=>(c.google_tag_manager || '').trim()).length,
+      gtmClientsPct: pct(s.clients.filter(c=>(c.google_tag_manager || '').trim()).length, s.clients.length),
+      avgLpsPerClient: s.clients.length ? (s.lps.length / s.clients.length).toFixed(1) : '0.0',
+      topClientRows, hasTopClientRows: topClientRows.length>0, noTopClientRows: topClientRows.length===0,
+      recentLps, hasRecentLps: recentLps.length>0, noRecentLps: recentLps.length===0,
+      clientsWithoutLpRows, hasClientsWithoutLp: clientsWithoutLpRows.length>0, noClientsWithoutLp: clientsWithoutLpRows.length===0,
       weekBuckets: this.weeklyBuckets(),
 
       searchTerm: s.searchTerm, setSearchTerm: (e)=>this.setState({searchTerm:e.target.value}),
