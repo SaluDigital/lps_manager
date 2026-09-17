@@ -160,7 +160,7 @@ input,select,button{font-family:'Inter',sans-serif;}
                   <sc-for list="{{ topClientRows }}" as="c" hint-placeholder-count="4">
                     <div onClick="{{ c.onSelect }}" style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border:1px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;" style-hover="background:var(--bg);">
                       <div style="min-width:0;">
-                        <div style="font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ c.nome_divulgacao }}</div>
+                        <div style="font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ c.nome }}</div>
                         <div style="font-size:12px;color:var(--gray-500);">{{ c.activeLpCount }} ativas</div>
                       </div>
                       <div style="font-size:12px;font-weight:700;background:var(--teal-tint);color:var(--teal-dark);border-radius:20px;padding:5px 10px;">{{ c.lpCount }} LPs</div>
@@ -227,7 +227,7 @@ input,select,button{font-family:'Inter',sans-serif;}
                   <sc-for list="{{ clientsWithoutLpRows }}" as="c" hint-placeholder-count="4">
                     <div onClick="{{ c.onSelect }}" style="display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;" style-hover="background:var(--bg);">
                       <div style="min-width:0;">
-                        <div style="font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ c.nome_divulgacao }}</div>
+                        <div style="font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ c.nome }}</div>
                         <div style="font-size:12px;color:var(--gray-500);">Sem LP cadastrada</div>
                       </div>
                       <div style="font-size:12px;font-weight:700;color:var(--orange);">Ver</div>
@@ -251,7 +251,6 @@ input,select,button{font-family:'Inter',sans-serif;}
                     <div onClick="{{ c.onSelect }}" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border:1px solid var(--border);border-radius:10px;cursor:pointer;" style-hover="background:var(--bg);">
                       <div>
                         <div style="font-weight:600;font-size:14px;">{{ c.nome }}</div>
-                        <div style="font-size:12px;color:var(--gray-500);">{{ c.nome_divulgacao }}</div>
                       </div>
                       <div style="display:flex;align-items:center;gap:8px;">
                         <div style="font-size:12px;color:var(--gray-500);">{{ c.lpCount }} LPs</div>
@@ -284,7 +283,6 @@ input,select,button{font-family:'Inter',sans-serif;}
                 <div onClick="{{ c.onSelect }}" style="display:grid;grid-template-columns:2fr 1.4fr 1.2fr 90px 90px 100px;gap:12px;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border);cursor:pointer;" style-hover="background:var(--bg);">
                   <div>
                     <div style="font-weight:600;font-size:14px;">{{ c.nome }}</div>
-                    <div style="font-size:12px;color:var(--gray-500);">{{ c.nome_divulgacao }}</div>
                   </div>
                   <div style="font-size:13px;color:var(--gray-700);">{{ c.nome_contato }}</div>
                   <div style="font-size:13px;color:var(--gray-700);">{{ c.whatsapp }}</div>
@@ -310,7 +308,6 @@ input,select,button{font-family:'Inter',sans-serif;}
               <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;">
                 <div>
                   <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:21px;">{{ selectedClient.nome }}</div>
-                  <div style="font-size:13px;color:var(--gray-500);margin-top:2px;">{{ selectedClient.nome_divulgacao }}</div>
                 </div>
                 <div style="display:flex;gap:8px;align-items:center;">
                   <div style="font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;background:{{ selectedClient.statusBg }};color:{{ selectedClient.statusFg }};">{{ selectedClient.ativoLabel }}</div>
@@ -320,13 +317,12 @@ input,select,button{font-family:'Inter',sans-serif;}
                   </sc-if>
                 </div>
               </div>
-              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;margin-top:22px;padding-top:22px;border-top:1px solid var(--border);">
-                <div><div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Contato</div><div style="font-size:14px;font-weight:500;">{{ selectedClient.nome_contato }}</div></div>
-                <div><div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">WhatsApp</div><div style="font-size:14px;font-weight:500;">{{ selectedClient.whatsapp }}</div></div>
-                <div><div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Endereço</div><div style="font-size:14px;font-weight:500;">{{ selectedClient.endereco }}</div></div>
-                <div><div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Sellbot</div><div style="font-size:14px;font-weight:500;">{{ selectedClient.sellbotLabel }}</div></div>
-                <div><div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Google Tag Manager</div><div style="font-size:14px;font-weight:500;">{{ selectedClient.googleTagManagerLabel }}</div></div>
-                <div><div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Cliente desde</div><div style="font-size:14px;font-weight:500;">{{ selectedClient.created_fmt }}</div></div>
+              <div style="display:grid;grid-template-columns:minmax(120px,1fr) minmax(130px,.8fr) minmax(260px,2fr) minmax(80px,.55fr) minmax(190px,1.2fr);gap:18px;margin-top:22px;padding-top:22px;border-top:1px solid var(--border);align-items:start;">
+                <div style="min-width:0;"><div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Contato</div><div style="font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ selectedClient.nome_contato }}</div></div>
+                <div style="min-width:0;"><div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">WhatsApp</div><div style="font-size:14px;font-weight:500;white-space:nowrap;">{{ selectedClient.whatsapp }}</div></div>
+                <div style="min-width:0;"><div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Endereço</div><div style="font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ selectedClient.endereco }}</div></div>
+                <div style="min-width:0;"><div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Sellbot</div><div style="font-size:14px;font-weight:500;white-space:nowrap;">{{ selectedClient.sellbotLabel }}</div></div>
+                <div style="min-width:0;"><div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Google Tag Manager</div><div style="font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ selectedClient.googleTagManagerLabel }}</div></div>
               </div>
             </div>
 
@@ -339,12 +335,13 @@ input,select,button{font-family:'Inter',sans-serif;}
             <div style="background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;">
               <sc-if value="{{ hasSelectedClientLps }}" hint-placeholder-val="{{ true }}">
                 <sc-for list="{{ selectedClientLps }}" as="l" hint-placeholder-count="3">
-                  <div style="display:grid;grid-template-columns:1.6fr 1.8fr 100px 130px;gap:12px;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border);">
+                  <div style="display:grid;grid-template-columns:1.4fr 1.5fr 2fr 100px 130px;gap:12px;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border);">
                     <div>
                       <div style="font-weight:600;font-size:14px;">{{ l.nome }}</div>
                       <div style="font-size:12px;color:var(--gray-500);">Criada em {{ l.created_fmt }}</div>
                     </div>
                     <a href="{{ l.link }}" target="_blank" style="font-size:13px;color:var(--teal-dark);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ l.link }}</a>
+                    <div style="font-size:13px;color:var(--gray-700);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ l.frase_whatsapp }}</div>
                     <button onClick="{{ l.onToggleStatus }}" style="border:1px solid {{ l.statusBg }};background:{{ l.statusBg }};color:{{ l.statusFg }};border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;">{{ l.statusLabel }}</button>
                     <sc-if value="{{ isAdminUser }}" hint-placeholder-val="{{ true }}">
                       <div style="display:flex;gap:8px;justify-content:flex-end;">
@@ -394,7 +391,6 @@ input,select,button{font-family:'Inter',sans-serif;}
         <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:18px;margin-bottom:18px;">{{ clientModalTitle }}</div>
         <div style="display:flex;flex-direction:column;gap:14px;">
           <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">Nome do cliente</label><input type="text" value="{{ clientModal.data.nome }}" onChange="{{ setClient_nome }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;"></div>
-          <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">Nome de divulgação</label><input type="text" value="{{ clientModal.data.nome_divulgacao }}" onChange="{{ setClient_nome_divulgacao }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;"></div>
           <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">Nome de contato</label><input type="text" value="{{ clientModal.data.nome_contato }}" onChange="{{ setClient_nome_contato }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;"></div>
           <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">WhatsApp</label><input type="tel" value="{{ clientModal.data.whatsapp }}" onChange="{{ setClient_whatsapp }}" maxlength="15" placeholder="(00) 00000-0000" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;"></div>
           <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">Endereço</label><input type="text" value="{{ clientModal.data.endereco }}" onChange="{{ setClient_endereco }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;"></div>
@@ -658,8 +654,8 @@ class Component extends DCLogic {
     await modal.onConfirm();
   };
 
-  openNewClient = () => { if(!this.isAdmin()) return; this.setState({clientModal:{mode:'new', data:{nome:'',nome_divulgacao:'',nome_contato:'',whatsapp:'',endereco:'',google_tag_manager:'',sellbot:'false',ativo:'true'}}}); };
-  openEditClient = (client) => { if(!this.isAdmin()) return; this.setState({clientModal:{mode:'edit', id:client.id, data:{nome:client.nome,nome_divulgacao:client.nome_divulgacao,nome_contato:client.nome_contato,whatsapp:this.formatWhatsApp(client.whatsapp),endereco:client.endereco,google_tag_manager:client.google_tag_manager || '',sellbot:client.sellbot?'true':'false',ativo:client.ativo?'true':'false'}}}); };
+  openNewClient = () => { if(!this.isAdmin()) return; this.setState({clientModal:{mode:'new', data:{nome:'',nome_contato:'',whatsapp:'',endereco:'',google_tag_manager:'',sellbot:'false',ativo:'true'}}}); };
+  openEditClient = (client) => { if(!this.isAdmin()) return; this.setState({clientModal:{mode:'edit', id:client.id, data:{nome:client.nome,nome_contato:client.nome_contato,whatsapp:this.formatWhatsApp(client.whatsapp),endereco:client.endereco,google_tag_manager:client.google_tag_manager || '',sellbot:client.sellbot?'true':'false',ativo:client.ativo?'true':'false'}}}); };
   closeClientModal = () => this.setState({clientModal:null});
   formatWhatsApp(value){
     const digits = String(value || '').replace(/\D/g, '').slice(0,11);
@@ -678,7 +674,7 @@ class Component extends DCLogic {
     if(!this.isAdmin()) return;
     const m = this.state.clientModal;
     if(!m.data.nome.trim()){ this.showToast('Informe o nome do cliente.','error'); return; }
-    const dataOut = {...m.data, whatsapp:this.formatWhatsApp(m.data.whatsapp), google_tag_manager:(m.data.google_tag_manager || '').trim().toUpperCase(), sellbot:m.data.sellbot==='true', ativo:m.data.ativo==='true'};
+    const dataOut = {...m.data, nome_divulgacao:m.data.nome.trim(), whatsapp:this.formatWhatsApp(m.data.whatsapp), google_tag_manager:(m.data.google_tag_manager || '').trim().toUpperCase(), sellbot:m.data.sellbot==='true', ativo:m.data.ativo==='true'};
     if(this.hasSupabase()){
       try{
         const db = this.db();
@@ -939,10 +935,10 @@ class Component extends DCLogic {
     });
 
     const dashSearch = s.searchTerm.trim().toLowerCase();
-    const dashResults = dashSearch ? s.clients.filter(c=>c.nome.toLowerCase().includes(dashSearch)||c.nome_divulgacao.toLowerCase().includes(dashSearch)).slice(0,6).map(c=>this.mapClient(c)) : [];
+    const dashResults = dashSearch ? s.clients.filter(c=>c.nome.toLowerCase().includes(dashSearch)).slice(0,6).map(c=>this.mapClient(c)) : [];
 
     const clientsSearch = s.clientsSearchTerm.trim().toLowerCase();
-    const clientsFiltered = s.clients.filter(c=>!clientsSearch || c.nome.toLowerCase().includes(clientsSearch)||c.nome_divulgacao.toLowerCase().includes(clientsSearch)).map(c=>this.mapClient(c));
+    const clientsFiltered = s.clients.filter(c=>!clientsSearch || c.nome.toLowerCase().includes(clientsSearch)).map(c=>this.mapClient(c));
 
     const rawSelectedClient = s.selectedClientId ? clientById[s.selectedClientId] : null;
     const selectedClient = rawSelectedClient ? this.mapClient(rawSelectedClient) : null;
@@ -961,13 +957,13 @@ class Component extends DCLogic {
       .slice()
       .sort((a,b)=>b.created_at.localeCompare(a.created_at))
       .slice(0,5)
-      .map(l=>({...this.mapLp(l), clientName: clientById[l.cliente_id] ? clientById[l.cliente_id].nome_divulgacao : 'Cliente removido', onSelectClient:()=>this.selectClient(l.cliente_id)}));
+      .map(l=>({...this.mapLp(l), clientName: clientById[l.cliente_id] ? clientById[l.cliente_id].nome : 'Cliente removido', onSelectClient:()=>this.selectClient(l.cliente_id)}));
 
     const navBase = 'display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;border:none;background:transparent;font-size:14px;font-weight:500;color:var(--gray-700);cursor:pointer;text-align:left;width:100%;';
     const navActive = 'background:var(--teal-tint);color:var(--teal-dark);font-weight:600;';
     const navStyle = (active) => navBase + (active?navActive:'');
 
-    const clientFieldNames = ['nome','nome_divulgacao','nome_contato','whatsapp','endereco','google_tag_manager','sellbot','ativo'];
+    const clientFieldNames = ['nome','nome_contato','whatsapp','endereco','google_tag_manager','sellbot','ativo'];
     const clientSetters = {};
     clientFieldNames.forEach(f=>{ clientSetters['setClient_'+f] = (e)=>this.updateClientModalField(f, e.target.value); });
 
