@@ -27,6 +27,14 @@ window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXB
 body{margin:0;font-family:'Inter',sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;}
 input,select,button{font-family:'Inter',sans-serif;}
 ::placeholder{color:var(--gray-300);}
+.weekly-line{stroke-dasharray:760;stroke-dashoffset:760;animation:drawWeeklyLine .9s ease-out forwards;}
+.weekly-area{opacity:0;animation:fadeWeeklyArea .75s ease-out .25s forwards;}
+.weekly-point{opacity:0;transform-box:fill-box;transform-origin:center;animation:popWeeklyPoint .32s ease-out forwards;}
+.metric-number{animation:metricPulse .36s ease-out both;}
+@keyframes drawWeeklyLine{to{stroke-dashoffset:0;}}
+@keyframes fadeWeeklyArea{to{opacity:1;}}
+@keyframes popWeeklyPoint{from{opacity:0;transform:scale(.65);}to{opacity:1;transform:scale(1);}}
+@keyframes metricPulse{from{opacity:.35;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
 </style>
 </helmet>
 <div style="--teal:{{ accentColor }};min-height:100vh;width:100%;">
@@ -89,40 +97,40 @@ input,select,button{font-family:'Inter',sans-serif;}
               <div style="width:38px;height:38px;border-radius:50%;background:var(--purple-tint);display:flex;align-items:center;justify-content:center;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
               </div>
-              <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:28px;">{{ totalClients }}</div>
+              <div class="metric-number" style="font-family:'Poppins',sans-serif;font-weight:700;font-size:28px;">{{ metricTotalClients }}</div>
               <div style="font-size:12px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;">Total de clientes</div>
             </div>
             <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:10px;transition:transform .15s;" style-hover="transform:translateY(-2px);">
-              <div style="width:38px;height:38px;border-radius:50%;background:var(--teal-tint);display:flex;align-items:center;justify-content:center;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal-dark)" stroke-width="2"><path d="M6 3h9l3 3v15H6z"/><path d="M9 9h6M9 13h6M9 17h4"/></svg>
+              <div style="width:38px;height:38px;border-radius:50%;background:#e8f7ff;display:flex;align-items:center;justify-content:center;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0b86b8" stroke-width="2"><path d="M6 3h9l3 3v15H6z"/><path d="M9 9h6M9 13h6M9 17h4"/></svg>
               </div>
-              <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:28px;">{{ totalLps }}</div>
+              <div class="metric-number" style="font-family:'Poppins',sans-serif;font-weight:700;font-size:28px;">{{ metricTotalLps }}</div>
               <div style="font-size:12px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;">Total de LPs</div>
             </div>
             <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:10px;transition:transform .15s;" style-hover="transform:translateY(-2px);">
               <div style="width:38px;height:38px;border-radius:50%;background:var(--teal-tint);display:flex;align-items:center;justify-content:center;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal-dark)" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>
               </div>
-              <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:28px;">{{ activeLps }}</div>
+              <div class="metric-number" style="font-family:'Poppins',sans-serif;font-weight:700;font-size:28px;">{{ metricActiveLps }}</div>
               <div style="font-size:12px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;">LPs ativas</div>
             </div>
             <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:10px;transition:transform .15s;" style-hover="transform:translateY(-2px);">
               <div style="width:38px;height:38px;border-radius:50%;background:var(--danger-tint);display:flex;align-items:center;justify-content:center;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>
               </div>
-              <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:28px;">{{ inactiveLps }}</div>
+              <div class="metric-number" style="font-family:'Poppins',sans-serif;font-weight:700;font-size:28px;">{{ metricInactiveLps }}</div>
               <div style="font-size:12px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;">LPs inativas</div>
             </div>
             <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:10px;transition:transform .15s;" style-hover="transform:translateY(-2px);">
-              <div style="width:38px;height:38px;border-radius:50%;background:var(--orange-tint);display:flex;align-items:center;justify-content:center;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2"><path d="M4 7h16"/><path d="M7 4v16"/><path d="M17 4v16"/><path d="M4 17h16"/></svg>
+              <div style="width:38px;height:38px;border-radius:50%;background:#fff0e9;display:flex;align-items:center;justify-content:center;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f37b4d" stroke-width="2"><path d="M4 7h16"/><path d="M7 4v16"/><path d="M17 4v16"/><path d="M4 17h16"/></svg>
               </div>
-              <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:28px;">{{ gtmClients }}</div>
+              <div class="metric-number" style="font-family:'Poppins',sans-serif;font-weight:700;font-size:28px;">{{ metricGtmClients }}</div>
               <div style="font-size:12px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;">GTM configurado</div>
             </div>
           </div>
 
-          <div style="display:grid;grid-template-columns:1fr;gap:16px;align-items:stretch;">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:16px;align-items:start;">
             <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px;">
               <div>
                 <div style="font-weight:700;font-size:17px;">Clientes com mais LPs</div>
@@ -145,24 +153,7 @@ input,select,button{font-family:'Inter',sans-serif;}
                 <div style="border:1px dashed var(--border);border-radius:12px;padding:18px;font-size:13px;color:var(--gray-500);">Cadastre LPs para montar o ranking automaticamente.</div>
               </sc-if>
             </div>
-          </div>
 
-          <sc-if value="{{ showWeeklyChart }}" hint-placeholder-val="{{ true }}">
-            <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;">
-              <div style="font-weight:600;font-size:15px;margin-bottom:18px;">LPs cadastradas por semana</div>
-              <div style="display:flex;align-items:flex-end;gap:14px;height:140px;">
-                <sc-for list="{{ weekBuckets }}" as="wk" hint-placeholder-count="6">
-                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end;">
-                    <div style="font-size:12px;font-weight:600;color:var(--teal-dark);">{{ wk.count }}</div>
-                    <div style="width:100%;max-width:34px;background:var(--teal);border-radius:6px 6px 0 0;height:{{ wk.pct }}%;min-height:4px;"></div>
-                    <div style="font-size:11px;color:var(--gray-500);">{{ wk.label }}</div>
-                  </div>
-                </sc-for>
-              </div>
-            </div>
-          </sc-if>
-
-          <div style="display:grid;grid-template-columns:1fr;gap:16px;align-items:start;">
             <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px;">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
                 <div>
@@ -191,6 +182,34 @@ input,select,button{font-family:'Inter',sans-serif;}
             </div>
 
           </div>
+
+          <sc-if value="{{ showWeeklyChart }}" hint-placeholder-val="{{ true }}">
+            <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;">
+              <div style="font-weight:600;font-size:15px;margin-bottom:18px;">LPs cadastradas por semana</div>
+              <div style="width:100%;height:190px;position:relative;">
+                <svg viewBox="0 0 600 170" preserveAspectRatio="none" style="width:100%;height:170px;display:block;overflow:visible;">
+                  <defs>
+                    <linearGradient id="weeklyAreaGradient" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0%" stop-color="var(--teal)" stop-opacity=".22"></stop>
+                      <stop offset="100%" stop-color="var(--teal)" stop-opacity="0"></stop>
+                    </linearGradient>
+                  </defs>
+                  <path d="M30 138 H570" stroke="var(--border)" stroke-width="1" fill="none"></path>
+                  <path d="M30 94 H570" stroke="var(--border)" stroke-width="1" fill="none" opacity=".65"></path>
+                  <path d="M30 50 H570" stroke="var(--border)" stroke-width="1" fill="none" opacity=".45"></path>
+                  <polygon points="{{ weekAreaPoints }}" fill="url(#weeklyAreaGradient)" class="weekly-area"></polygon>
+                  <polyline points="{{ weekLinePoints }}" fill="none" stroke="var(--teal)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="weekly-line"></polyline>
+                  <sc-for list="{{ weekBuckets }}" as="wk" hint-placeholder-count="6">
+                    <g>
+                      <circle cx="{{ wk.x }}" cy="{{ wk.y }}" r="7" fill="#ffffff" stroke="var(--teal)" stroke-width="4" class="weekly-point" style="animation-delay:{{ wk.delay }}ms;"></circle>
+                      <text x="{{ wk.x }}" y="{{ wk.valueY }}" text-anchor="middle" fill="var(--teal-dark)" font-size="12" font-weight="700">{{ wk.count }}</text>
+                      <text x="{{ wk.x }}" y="162" text-anchor="middle" fill="var(--gray-500)" font-size="11">{{ wk.label }}</text>
+                    </g>
+                  </sc-for>
+                </svg>
+              </div>
+            </div>
+          </sc-if>
 
           <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;">
             <div style="font-weight:600;font-size:15px;margin-bottom:14px;">Buscar cliente</div>
@@ -460,6 +479,7 @@ class Component extends DCLogic {
     searchTerm:'', clientsSearchTerm:'', selectedClientId:null, toast:null,
     loginEmail:'', loginPassword:'', loginError:'',
     clientModal:null, lpModal:null, userModal:null, confirmModal:null,
+    dashboardCounts:{totalClients:0,totalLps:0,activeLps:0,inactiveLps:0,gtmClients:0},
   };
 
   async componentDidMount(){
@@ -474,6 +494,48 @@ class Component extends DCLogic {
         if(u) this.setState({currentUser:u, screen:'dashboard'});
       }
     }catch(e){}
+  }
+
+  componentDidUpdate(){
+    if(this.state.screen !== 'dashboard') return;
+    const targets = this.dashboardMetricTargets();
+    const key = JSON.stringify(targets);
+    if(this._dashboardMetricKey !== key){
+      this.animateDashboardMetrics(targets, key);
+    }
+  }
+
+  dashboardMetricTargets(){
+    const lps = this.state.lps;
+    const clients = this.state.clients;
+    return {
+      totalClients: clients.length,
+      totalLps: lps.length,
+      activeLps: lps.filter(l=>l.status==='ativo').length,
+      inactiveLps: lps.filter(l=>l.status==='inativo').length,
+      gtmClients: clients.filter(c=>(c.google_tag_manager || '').trim()).length,
+    };
+  }
+
+  animateDashboardMetrics(targets, key){
+    cancelAnimationFrame(this._dashboardMetricFrame);
+    this._dashboardMetricKey = key;
+    const startCounts = this.state.dashboardCounts || {};
+    const startedAt = performance.now();
+    const duration = 850;
+    const tick = (now) => {
+      const progress = Math.min(1, (now - startedAt) / duration);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const next = {};
+      Object.keys(targets).forEach(k=>{
+        const from = Number(startCounts[k] || 0);
+        const to = Number(targets[k] || 0);
+        next[k] = Math.round(from + (to - from) * eased);
+      });
+      this.setState({dashboardCounts: next});
+      if(progress < 1) this._dashboardMetricFrame = requestAnimationFrame(tick);
+    };
+    this._dashboardMetricFrame = requestAnimationFrame(tick);
   }
 
   uid(){ return 'id_'+Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
@@ -838,7 +900,15 @@ class Component extends DCLogic {
       buckets.push({label:(start.getMonth()+1)+'/'+start.getDate(), count});
     }
     const max = Math.max(1, ...buckets.map(b=>b.count));
-    return buckets.map(b=>({...b, pct: Math.max(4, Math.round((b.count/max)*100))}));
+    const chartWidth = 540;
+    const left = 30;
+    const top = 28;
+    const bottom = 138;
+    return buckets.map((b,i)=>{
+      const x = left + (buckets.length === 1 ? chartWidth / 2 : (chartWidth / (buckets.length - 1)) * i);
+      const y = bottom - ((b.count / max) * (bottom - top));
+      return {...b, x:Math.round(x), y:Math.round(y), valueY:Math.max(16, Math.round(y - 14)), delay:350 + (i * 90)};
+    });
   }
 
   mapClient(c){
@@ -896,6 +966,8 @@ class Component extends DCLogic {
     const selectedClientLps = selectedClient ? s.lps.filter(l=>l.cliente_id===selectedClient.id).sort((a,b)=>b.created_at.localeCompare(a.created_at)).map(l=>this.mapLp(l)) : [];
     const activeLpsCount = s.lps.filter(l=>l.status==='ativo').length;
     const inactiveLpsCount = s.lps.filter(l=>l.status==='inativo').length;
+    const gtmClientsCount = s.clients.filter(c=>(c.google_tag_manager || '').trim()).length;
+    const dashboardCounts = s.dashboardCounts || {};
     const topClientRows = s.clients
       .map(c=>({...this.mapClient(c), lpCount:lpCountsByClient[c.id] || 0, activeLpCount:activeLpCountsByClient[c.id] || 0}))
       .filter(c=>c.lpCount>0)
@@ -906,6 +978,9 @@ class Component extends DCLogic {
       .sort((a,b)=>b.created_at.localeCompare(a.created_at))
       .slice(0,5)
       .map(l=>({...this.mapLp(l), clientName: clientById[l.cliente_id] ? clientById[l.cliente_id].nome : 'Cliente removido', onSelectClient:()=>this.selectClient(l.cliente_id)}));
+    const weekBuckets = this.weeklyBuckets();
+    const weekLinePoints = weekBuckets.map(w=>`${w.x},${w.y}`).join(' ');
+    const weekAreaPoints = weekBuckets.length ? `30,138 ${weekLinePoints} 570,138` : '';
 
     const navBase = 'display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;border:none;background:transparent;font-size:14px;font-weight:500;color:var(--gray-700);cursor:pointer;text-align:left;width:100%;';
     const navActive = 'background:var(--teal-tint);color:var(--teal-dark);font-weight:600;';
@@ -940,12 +1015,17 @@ class Component extends DCLogic {
 
       totalLps: s.lps.length, activeLps: activeLpsCount, inactiveLps: inactiveLpsCount,
       totalClients: s.clients.length,
-      gtmClients: s.clients.filter(c=>(c.google_tag_manager || '').trim()).length,
+      gtmClients: gtmClientsCount,
+      metricTotalClients: dashboardCounts.totalClients,
+      metricTotalLps: dashboardCounts.totalLps,
+      metricActiveLps: dashboardCounts.activeLps,
+      metricInactiveLps: dashboardCounts.inactiveLps,
+      metricGtmClients: dashboardCounts.gtmClients,
       sellbotClients: s.clients.filter(c=>c.sellbot).length,
       avgLpsPerClient: s.clients.length ? (s.lps.length / s.clients.length).toFixed(1) : '0.0',
       topClientRows, hasTopClientRows: topClientRows.length>0, noTopClientRows: topClientRows.length===0,
       recentLps, hasRecentLps: recentLps.length>0, noRecentLps: recentLps.length===0,
-      weekBuckets: this.weeklyBuckets(),
+      weekBuckets, weekLinePoints, weekAreaPoints,
 
       searchTerm: s.searchTerm, setSearchTerm: (e)=>this.setState({searchTerm:e.target.value}),
       dashResults, hasDashSearch: !!dashSearch, hasDashResults: dashResults.length>0,
