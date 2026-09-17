@@ -16,7 +16,7 @@ window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXB
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--teal-dark:#0e6f66;--teal-tint:#e3f6f1;--orange:#e2793f;--orange-tint:#fdf0e7;--purple:#5c2d6f;--purple-tint:#f1e9f4;--ink:#23262b;--gray-700:#3f4448;--gray-500:#6b7178;--gray-300:#c7ccd1;--bg:#f4f6f8;--border:#e6e9ec;--danger:#c0392b;--danger-tint:#fbeae8;}
+:root{--teal-dark:#00877f;--teal-tint:#dff6f2;--orange:#f37b4d;--orange-tint:#fff0e9;--purple:#66337f;--purple-tint:#f1e8f5;--ink:#1f2930;--gray-700:#46515a;--gray-500:#6f7a83;--gray-300:#c7d0d5;--bg:#f6f9f8;--border:#e2ebe9;--danger:#c0392b;--danger-tint:#fbeae8;}
 *{box-sizing:border-box;}
 body{margin:0;font-family:'Inter',sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;}
 input,select,button{font-family:'Inter',sans-serif;}
@@ -28,7 +28,7 @@ input,select,button{font-family:'Inter',sans-serif;}
 <sc-if value="{{ loggedOut }}" hint-placeholder-val="{{ true }}">
   <div style="min-height:100vh;width:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#f4f6f8 0%,#eef2f4 100%);padding:24px;">
     <div style="width:100%;max-width:400px;background:#ffffff;border-radius:20px;box-shadow:0 20px 50px -20px rgba(35,38,43,0.25);padding:40px 36px;">
-      <img src="assets/logo-superdental.png" alt="SuperDental" style="height:38px;display:block;margin:0 auto 32px;">
+      <img src="assets/logo-salu.webp" alt="Salu" style="height:38px;display:block;margin:0 auto 32px;">
       <div style="font-family:'Poppins',sans-serif;font-weight:600;font-size:19px;text-align:center;color:var(--ink);margin-bottom:4px;">Controle de Landing Pages</div>
       <div style="font-size:13px;color:var(--gray-500);text-align:center;margin-bottom:28px;">Acesse com sua conta da equipe de mídia</div>
       <div style="display:flex;flex-direction:column;gap:14px;">
@@ -54,14 +54,13 @@ input,select,button{font-family:'Inter',sans-serif;}
   <div style="min-height:100vh;width:100%;display:flex;">
 
     <div style="width:230px;flex-shrink:0;background:#ffffff;border-right:1px solid var(--border);display:flex;flex-direction:column;padding:24px 14px;">
-      <img src="assets/logo-superdental.png" alt="SuperDental" style="height:24px;margin:0 10px 32px;">
+      <img src="assets/logo-salu.webp" alt="Salu" style="height:28px;margin:0 10px 32px;">
       <div style="display:flex;flex-direction:column;gap:4px;">
         <button onClick="{{ gotoDashboard }}" style="{{ navDashboardStyle }}">Dashboard</button>
         <button onClick="{{ gotoClients }}" style="{{ navClientsStyle }}">Clientes</button>
         <sc-if value="{{ isAdminUser }}">
           <button onClick="{{ gotoUsers }}" style="{{ navUsersStyle }}">Usuários</button>
         </sc-if>
-        <button onClick="{{ gotoReports }}" style="{{ navReportsStyle }}">Relatórios</button>
       </div>
       <div style="margin-top:auto;padding-top:16px;border-top:1px solid var(--border);">
         <div style="font-size:13px;font-weight:600;padding:0 10px;">{{ currentUser.nome }}</div>
@@ -271,57 +270,6 @@ input,select,button{font-family:'Inter',sans-serif;}
         </sc-if>
       </sc-if>
 
-      <sc-if value="{{ isReports }}">
-        <div style="display:flex;flex-direction:column;gap:20px;">
-          <div>
-            <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:23px;">Relatórios</div>
-            <div style="font-size:14px;color:var(--gray-500);">Landing pages filtráveis por status, cliente e período</div>
-          </div>
-          <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px;display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;">
-            <div>
-              <label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">Status</label>
-              <select value="{{ reportStatus }}" onChange="{{ setReportStatus }}" style="padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;min-width:140px;">
-                <option value="all">Todos</option>
-                <option value="ativo">Ativo</option>
-                <option value="inativo">Inativo</option>
-              </select>
-            </div>
-            <div>
-              <label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">Cliente</label>
-              <select value="{{ reportClient }}" onChange="{{ setReportClient }}" style="padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;min-width:180px;">
-                <option value="all">Todos</option>
-                <sc-for list="{{ clientOptions }}" as="co" hint-placeholder-count="4">
-                  <option value="{{ co.id }}">{{ co.nome }}</option>
-                </sc-for>
-              </select>
-            </div>
-            <div>
-              <label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">De</label>
-              <input type="date" value="{{ reportFrom }}" onChange="{{ setReportFrom }}" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
-            </div>
-            <div>
-              <label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">Até</label>
-              <input type="date" value="{{ reportTo }}" onChange="{{ setReportTo }}" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
-            </div>
-            <sc-if value="{{ csvExportEnabled }}" hint-placeholder-val="{{ true }}">
-              <button onClick="{{ exportCsv }}" style="margin-left:auto;background:var(--ink);color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;">Exportar CSV</button>
-            </sc-if>
-          </div>
-          <div style="background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;">
-            <sc-if value="{{ hasReportLps }}" hint-placeholder-val="{{ true }}">
-              <sc-for list="{{ reportLps }}" as="l" hint-placeholder-count="4">
-                <div style="display:grid;grid-template-columns:1.6fr 1.8fr 100px 110px;gap:12px;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border);">
-                  <div style="font-weight:600;font-size:14px;">{{ l.clientName }}</div>
-                  <div style="font-size:13px;color:var(--gray-700);">{{ l.nome }}</div>
-                  <div style="font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;background:{{ l.statusBg }};color:{{ l.statusFg }};text-align:center;">{{ l.statusLabel }}</div>
-                  <div style="font-size:12px;color:var(--gray-500);">{{ l.created_fmt }}</div>
-                </div>
-              </sc-for>
-            </sc-if>
-          </div>
-        </div>
-      </sc-if>
-
     </div>
   </div>
 
@@ -401,7 +349,7 @@ input,select,button{font-family:'Inter',sans-serif;}
 </div>
 
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{},&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#159489&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#159489&quot;,&quot;#5c2d6f&quot;,&quot;#e2793f&quot;]},&quot;showWeeklyChart&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Dashboard&quot;},&quot;csvExportEnabled&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Relatórios&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{},&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#00877f&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#00877f&quot;,&quot;#66337f&quot;,&quot;#f37b4d&quot;]},&quot;showWeeklyChart&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Dashboard&quot;}}">
 class Component extends DCLogic {
   state = {
     screen: 'login',
@@ -436,7 +384,6 @@ class Component extends DCLogic {
     searchTerm:'', clientsSearchTerm:'', selectedClientId:null, toast:null,
     loginEmail:'', loginPassword:'', loginError:'',
     clientModal:null, lpModal:null, userModal:null,
-    reportStatus:'all', reportClient:'all', reportFrom:'', reportTo:'',
   };
 
   async componentDidMount(){
@@ -750,7 +697,7 @@ class Component extends DCLogic {
   mapClient(c){
     return {...c,
       sellbotLabel: c.sellbot?'Sim':'Não', ativoLabel: c.ativo?'Ativo':'Inativo',
-      statusBg: c.ativo?'#e3f6f1':'#fbeae8', statusFg: c.ativo?'#0e6f66':'#c0392b',
+      statusBg: c.ativo?'#dff6f2':'#fbeae8', statusFg: c.ativo?'#00877f':'#c0392b',
       created_fmt: this.formatDate(c.created_at),
       onSelect: ()=>this.selectClient(c.id), onEdit: ()=>this.openEditClient(c), onDelete: ()=>this.deleteClient(c.id),
       onNewLp: ()=>this.openNewLp(c.id),
@@ -759,7 +706,7 @@ class Component extends DCLogic {
   mapLp(l){
     return {...l,
       statusLabel: l.status==='ativo'?'Ativo':'Inativo',
-      statusBg: l.status==='ativo'?'#e3f6f1':'#fbeae8', statusFg: l.status==='ativo'?'#0e6f66':'#c0392b',
+      statusBg: l.status==='ativo'?'#dff6f2':'#fbeae8', statusFg: l.status==='ativo'?'#00877f':'#c0392b',
       created_fmt: this.formatDate(l.created_at),
       onToggleStatus: ()=>this.toggleLpStatus(l.id), onEdit: ()=>this.openEditLp(l), onDelete: ()=>this.deleteLp(l.id),
     };
@@ -767,7 +714,7 @@ class Component extends DCLogic {
   mapUser(u){
     return {...u,
       ativoLabel: u.ativo?'Ativo':'Inativo', roleLabel: u.role==='admin'?'Admin':'Mídia',
-      statusBg: u.ativo?'#e3f6f1':'#fbeae8', statusFg: u.ativo?'#0e6f66':'#c0392b',
+      statusBg: u.ativo?'#dff6f2':'#fbeae8', statusFg: u.ativo?'#00877f':'#c0392b',
       onToggleActive: ()=>this.toggleUserActive(u.id),
     };
   }
@@ -788,14 +735,6 @@ class Component extends DCLogic {
     const selectedClient = rawSelectedClient ? this.mapClient(rawSelectedClient) : null;
     const selectedClientLps = selectedClient ? s.lps.filter(l=>l.cliente_id===selectedClient.id).sort((a,b)=>b.created_at.localeCompare(a.created_at)).map(l=>this.mapLp(l)) : [];
 
-    let reportLps = s.lps.map(l=>({...l, clientName: clientById[l.cliente_id] ? clientById[l.cliente_id].nome : '—'}));
-    if(s.reportStatus!=='all') reportLps = reportLps.filter(l=>l.status===s.reportStatus);
-    if(s.reportClient!=='all') reportLps = reportLps.filter(l=>l.cliente_id===s.reportClient);
-    if(s.reportFrom) reportLps = reportLps.filter(l=>l.created_at>=s.reportFrom);
-    if(s.reportTo) reportLps = reportLps.filter(l=>l.created_at<=s.reportTo);
-    reportLps.sort((a,b)=>b.created_at.localeCompare(a.created_at));
-    reportLps = reportLps.map(l=>({...this.mapLp(l), clientName:l.clientName}));
-
     const navBase = 'display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;border:none;background:transparent;font-size:14px;font-weight:500;color:var(--gray-700);cursor:pointer;text-align:left;width:100%;';
     const navActive = 'background:var(--teal-tint);color:var(--teal-dark);font-weight:600;';
     const navStyle = (active) => navBase + (active?navActive:'');
@@ -813,9 +752,8 @@ class Component extends DCLogic {
     userFieldNames.forEach(f=>{ userSetters['setUser_'+f] = (e)=>this.updateUserModalField(f, e.target.value); });
 
     return {
-      accentColor: this.props.accentColor ?? '#159489',
+      accentColor: this.props.accentColor ?? '#00877f',
       showWeeklyChart: this.props.showWeeklyChart ?? true,
-      csvExportEnabled: this.props.csvExportEnabled ?? true,
 
       isLoggedIn: !!user, loggedOut: !user, isAdminUser: this.isAdmin(),
       currentUser: user ? {...user, roleLabel: user.role==='admin'?'Administrador':'Mídia'} : null,
@@ -824,9 +762,9 @@ class Component extends DCLogic {
       setLoginPassword: (e)=>this.setState({loginPassword:e.target.value}),
       doLogin: this.login, doLogout: this.logout,
 
-      isDashboard: s.screen==='dashboard', isClients: s.screen==='clients', isClientDetail: s.screen==='clientDetail', isUsers: s.screen==='users', isReports: s.screen==='reports',
-      gotoDashboard: ()=>this.goto('dashboard'), gotoClients: ()=>this.goto('clients'), gotoUsers: ()=>this.goto('users'), gotoReports: ()=>this.goto('reports'),
-      navDashboardStyle: navStyle(s.screen==='dashboard'), navClientsStyle: navStyle(s.screen==='clients'), navUsersStyle: navStyle(s.screen==='users'), navReportsStyle: navStyle(s.screen==='reports'),
+      isDashboard: s.screen==='dashboard', isClients: s.screen==='clients', isClientDetail: s.screen==='clientDetail', isUsers: s.screen==='users',
+      gotoDashboard: ()=>this.goto('dashboard'), gotoClients: ()=>this.goto('clients'), gotoUsers: ()=>this.goto('users'),
+      navDashboardStyle: navStyle(s.screen==='dashboard'), navClientsStyle: navStyle(s.screen==='clients'), navUsersStyle: navStyle(s.screen==='users'),
 
       totalLps: s.lps.length, activeLps: s.lps.filter(l=>l.status==='ativo').length, inactiveLps: s.lps.filter(l=>l.status==='inativo').length,
       totalClients: s.clients.length, activeClients: s.clients.filter(c=>c.ativo).length,
@@ -844,22 +782,6 @@ class Component extends DCLogic {
 
       users: s.users.map(u=>this.mapUser(u)), openNewUser: this.openNewUser,
 
-      reportStatus: s.reportStatus, reportClient: s.reportClient, reportFrom: s.reportFrom, reportTo: s.reportTo,
-      setReportStatus: (e)=>this.setState({reportStatus:e.target.value}),
-      setReportClient: (e)=>this.setState({reportClient:e.target.value}),
-      setReportFrom: (e)=>this.setState({reportFrom:e.target.value}),
-      setReportTo: (e)=>this.setState({reportTo:e.target.value}),
-      reportLps, hasReportLps: reportLps.length>0,
-      clientOptions: s.clients.map(c=>({id:c.id, nome:c.nome})),
-      exportCsv: ()=>{
-        let csv = 'Cliente,LP,Status,Link,Criado em\n';
-        reportLps.forEach(l=>{ csv += `"${l.clientName}","${l.nome}","${l.statusLabel}","${l.link}","${l.created_fmt}"\n`; });
-        const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a'); a.href=url; a.download='relatorio_lps.csv'; a.click();
-        URL.revokeObjectURL(url);
-      },
-
       clientModal: s.clientModal, isClientModalOpen: !!s.clientModal,
       clientModalTitle: s.clientModal && s.clientModal.mode==='new' ? 'Novo Cliente' : 'Editar Cliente',
       closeClientModal: this.closeClientModal, saveClient: this.saveClient, ...clientSetters,
@@ -873,7 +795,7 @@ class Component extends DCLogic {
 
       toast: s.toast, hasToast: !!s.toast,
       toastMsg: s.toast ? s.toast.msg : '',
-      toastBg: s.toast && s.toast.type==='error' ? '#c0392b' : '#0e6f66',
+      toastBg: s.toast && s.toast.type==='error' ? '#c0392b' : '#00877f',
       toastFg: '#ffffff',
     };
   }
