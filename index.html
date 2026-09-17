@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>LPs Manager 1.0</title>
+<link rel="icon" type="image/webp" href="assets/favicon.webp">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 window.SUPABASE_URL = 'https://wmmpthszfjxmtpeycpmq.supabase.co';
@@ -13,6 +16,9 @@ window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXB
 <body>
 <x-dc>
 <helmet>
+<meta name="robots" content="noindex,nofollow">
+<title>LPs Manager 1.0</title>
+<link rel="icon" type="image/webp" href="assets/favicon.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -28,7 +34,7 @@ input,select,button{font-family:'Inter',sans-serif;}
 <sc-if value="{{ loggedOut }}" hint-placeholder-val="{{ true }}">
   <div style="min-height:100vh;width:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#f4f6f8 0%,#eef2f4 100%);padding:24px;">
     <div style="width:100%;max-width:400px;background:#ffffff;border-radius:20px;box-shadow:0 20px 50px -20px rgba(35,38,43,0.25);padding:40px 36px;">
-      <img src="assets/logo-salu.webp" alt="Salu" style="height:38px;display:block;margin:0 auto 32px;">
+      <img src="assets/logo-salu.webp" alt="Salu" style="width:190px;height:auto;display:block;margin:0 auto 32px;object-fit:contain;">
       <div style="font-family:'Poppins',sans-serif;font-weight:600;font-size:19px;text-align:center;color:var(--ink);margin-bottom:4px;">Controle de Landing Pages</div>
       <div style="font-size:13px;color:var(--gray-500);text-align:center;margin-bottom:28px;">Acesse com sua conta da equipe de mídia</div>
       <div style="display:flex;flex-direction:column;gap:14px;">
@@ -54,7 +60,7 @@ input,select,button{font-family:'Inter',sans-serif;}
   <div style="min-height:100vh;width:100%;display:flex;">
 
     <div style="width:230px;flex-shrink:0;background:#ffffff;border-right:1px solid var(--border);display:flex;flex-direction:column;padding:24px 14px;">
-      <img src="assets/logo-salu.webp" alt="Salu" style="height:28px;margin:0 10px 32px;">
+      <img src="assets/logo-salu.webp" alt="Salu" style="width:190px;height:auto;display:block;margin:0 10px 32px;object-fit:contain;">
       <div style="display:flex;flex-direction:column;gap:4px;">
         <button onClick="{{ gotoDashboard }}" style="{{ navDashboardStyle }}">Dashboard</button>
         <button onClick="{{ gotoClients }}" style="{{ navClientsStyle }}">Clientes</button>
@@ -212,6 +218,7 @@ input,select,button{font-family:'Inter',sans-serif;}
                 <div><div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">WhatsApp</div><div style="font-size:14px;font-weight:500;">{{ selectedClient.whatsapp }}</div></div>
                 <div><div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Endereço</div><div style="font-size:14px;font-weight:500;">{{ selectedClient.endereco }}</div></div>
                 <div><div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Sellbot</div><div style="font-size:14px;font-weight:500;">{{ selectedClient.sellbotLabel }}</div></div>
+                <div><div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Google Tag Manager</div><div style="font-size:14px;font-weight:500;">{{ selectedClient.googleTagManagerLabel }}</div></div>
                 <div><div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Cliente desde</div><div style="font-size:14px;font-weight:500;">{{ selectedClient.created_fmt }}</div></div>
               </div>
             </div>
@@ -258,11 +265,12 @@ input,select,button{font-family:'Inter',sans-serif;}
             </div>
             <div style="background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;">
               <sc-for list="{{ users }}" as="u" hint-placeholder-count="3">
-                <div style="display:grid;grid-template-columns:1.6fr 1.8fr 110px 110px;gap:12px;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border);">
+                <div style="display:grid;grid-template-columns:1.5fr 1.8fr 100px 100px 90px;gap:12px;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border);">
                   <div style="font-weight:600;font-size:14px;">{{ u.nome }}</div>
                   <div style="font-size:13px;color:var(--gray-700);">{{ u.email }}</div>
                   <div style="font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;background:var(--purple-tint);color:var(--purple);text-align:center;">{{ u.roleLabel }}</div>
                   <button onClick="{{ u.onToggleActive }}" style="border:1px solid {{ u.statusBg }};background:{{ u.statusBg }};color:{{ u.statusFg }};border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;">{{ u.ativoLabel }}</button>
+                  <button onClick="{{ u.onDelete }}" style="border:1px solid var(--danger-tint);background:var(--danger-tint);color:var(--danger);border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;">Excluir</button>
                 </div>
               </sc-for>
             </div>
@@ -281,8 +289,9 @@ input,select,button{font-family:'Inter',sans-serif;}
           <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">Nome do cliente</label><input type="text" value="{{ clientModal.data.nome }}" onChange="{{ setClient_nome }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;"></div>
           <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">Nome de divulgação</label><input type="text" value="{{ clientModal.data.nome_divulgacao }}" onChange="{{ setClient_nome_divulgacao }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;"></div>
           <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">Nome de contato</label><input type="text" value="{{ clientModal.data.nome_contato }}" onChange="{{ setClient_nome_contato }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;"></div>
-          <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">WhatsApp</label><input type="text" value="{{ clientModal.data.whatsapp }}" onChange="{{ setClient_whatsapp }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;"></div>
+          <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">WhatsApp</label><input type="tel" value="{{ clientModal.data.whatsapp }}" onChange="{{ setClient_whatsapp }}" maxlength="15" placeholder="(00) 00000-0000" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;"></div>
           <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">Endereço</label><input type="text" value="{{ clientModal.data.endereco }}" onChange="{{ setClient_endereco }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;"></div>
+          <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">Google Tag Manager</label><input type="text" value="{{ clientModal.data.google_tag_manager }}" onChange="{{ setClient_google_tag_manager }}" placeholder="GTM-XXXXXXX" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;text-transform:uppercase;"></div>
           <div style="display:flex;gap:14px;">
             <div style="flex:1;"><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">Sellbot</label>
               <select value="{{ clientModal.data.sellbot }}" onChange="{{ setClient_sellbot }}" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;"><option value="false">Não</option><option value="true">Sim</option></select>
@@ -340,6 +349,19 @@ input,select,button{font-family:'Inter',sans-serif;}
     </div>
   </sc-if>
 
+  <sc-if value="{{ isConfirmModalOpen }}">
+    <div style="position:fixed;inset:0;background:rgba(20,24,28,0.48);display:flex;align-items:center;justify-content:center;padding:24px;z-index:70;">
+      <div style="width:100%;max-width:420px;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:0 24px 70px -28px rgba(20,24,28,0.45);padding:24px;">
+        <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:18px;color:var(--ink);margin-bottom:8px;">{{ confirmTitle }}</div>
+        <div style="font-size:14px;line-height:1.45;color:var(--gray-700);margin-bottom:22px;">{{ confirmMessage }}</div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;">
+          <button onClick="{{ closeConfirmModal }}" style="border:1px solid var(--border);background:#fff;color:var(--gray-700);border-radius:8px;padding:10px 16px;font-size:14px;cursor:pointer;">Cancelar</button>
+          <button onClick="{{ confirmModalAction }}" style="border:1px solid {{ confirmBg }};background:{{ confirmBg }};color:#fff;border-radius:8px;padding:10px 16px;font-size:14px;font-weight:600;cursor:pointer;">{{ confirmLabel }}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
   <sc-if value="{{ hasToast }}">
     <div style="position:fixed;bottom:24px;right:24px;background:{{ toastBg }};color:{{ toastFg }};padding:14px 20px;border-radius:10px;font-size:14px;font-weight:500;box-shadow:0 10px 30px -10px rgba(0,0,0,0.3);z-index:60;">{{ toastMsg }}</div>
   </sc-if>
@@ -383,7 +405,7 @@ class Component extends DCLogic {
     ],
     searchTerm:'', clientsSearchTerm:'', selectedClientId:null, toast:null,
     loginEmail:'', loginPassword:'', loginError:'',
-    clientModal:null, lpModal:null, userModal:null,
+    clientModal:null, lpModal:null, userModal:null, confirmModal:null,
   };
 
   async componentDidMount(){
@@ -420,7 +442,7 @@ class Component extends DCLogic {
   }
 
   normalizeClient(c){
-    return {id:c.id, nome:c.nome, nome_divulgacao:c.nome_divulgacao, nome_contato:c.nome_contato || '', whatsapp:c.whatsapp || '', endereco:c.endereco || '', sellbot:!!c.sellbot, ativo:!!c.ativo, created_at:this.dateOnly(c.created_at)};
+    return {id:c.id, nome:c.nome, nome_divulgacao:c.nome_divulgacao, nome_contato:c.nome_contato || '', whatsapp:this.formatWhatsApp(c.whatsapp || ''), endereco:c.endereco || '', google_tag_manager:c.google_tag_manager || '', sellbot:!!c.sellbot, ativo:!!c.ativo, created_at:this.dateOnly(c.created_at)};
   }
 
   normalizeLp(l){
@@ -509,19 +531,47 @@ class Component extends DCLogic {
     this.setState({currentUser:null, screen:'login', loginEmail:'', loginPassword:''});
     try{ localStorage.removeItem('sd_session_email'); }catch(e){}
   };
-  goto = (screen) => this.setState({screen, clientModal:null, lpModal:null, userModal:null});
+  goto = (screen) => this.setState({screen, clientModal:null, lpModal:null, userModal:null, confirmModal:null});
   selectClient = (id) => this.setState({screen:'clientDetail', selectedClientId:id});
   isAdmin(){ return !!(this.state.currentUser && this.state.currentUser.role==='admin'); }
+  openConfirmModal(config){
+    this.setState({confirmModal:{
+      title:config.title || 'Confirmar ação',
+      message:config.message || 'Deseja continuar?',
+      confirmLabel:config.confirmLabel || 'Confirmar',
+      danger:config.danger !== false,
+      onConfirm:config.onConfirm,
+    }});
+  }
+  closeConfirmModal = () => this.setState({confirmModal:null});
+  confirmModalAction = async () => {
+    const modal = this.state.confirmModal;
+    if(!modal || !modal.onConfirm) return;
+    this.setState({confirmModal:null});
+    await modal.onConfirm();
+  };
 
-  openNewClient = () => { if(!this.isAdmin()) return; this.setState({clientModal:{mode:'new', data:{nome:'',nome_divulgacao:'',nome_contato:'',whatsapp:'',endereco:'',sellbot:'false',ativo:'true'}}}); };
-  openEditClient = (client) => { if(!this.isAdmin()) return; this.setState({clientModal:{mode:'edit', id:client.id, data:{nome:client.nome,nome_divulgacao:client.nome_divulgacao,nome_contato:client.nome_contato,whatsapp:client.whatsapp,endereco:client.endereco,sellbot:client.sellbot?'true':'false',ativo:client.ativo?'true':'false'}}}); };
+  openNewClient = () => { if(!this.isAdmin()) return; this.setState({clientModal:{mode:'new', data:{nome:'',nome_divulgacao:'',nome_contato:'',whatsapp:'',endereco:'',google_tag_manager:'',sellbot:'false',ativo:'true'}}}); };
+  openEditClient = (client) => { if(!this.isAdmin()) return; this.setState({clientModal:{mode:'edit', id:client.id, data:{nome:client.nome,nome_divulgacao:client.nome_divulgacao,nome_contato:client.nome_contato,whatsapp:this.formatWhatsApp(client.whatsapp),endereco:client.endereco,google_tag_manager:client.google_tag_manager || '',sellbot:client.sellbot?'true':'false',ativo:client.ativo?'true':'false'}}}); };
   closeClientModal = () => this.setState({clientModal:null});
-  updateClientModalField(field, value){ this.setState(s=>({clientModal:{...s.clientModal, data:{...s.clientModal.data,[field]:value}}})); }
+  formatWhatsApp(value){
+    const digits = String(value || '').replace(/\D/g, '').slice(0,11);
+    if(digits.length <= 2) return digits ? '('+digits : '';
+    if(digits.length <= 6) return '('+digits.slice(0,2)+') '+digits.slice(2);
+    if(digits.length <= 10) return '('+digits.slice(0,2)+') '+digits.slice(2,6)+'-'+digits.slice(6);
+    return '('+digits.slice(0,2)+') '+digits.slice(2,7)+'-'+digits.slice(7);
+  }
+  updateClientModalField(field, value){
+    let nextValue = value;
+    if(field==='whatsapp') nextValue = this.formatWhatsApp(value);
+    if(field==='google_tag_manager') nextValue = String(value || '').trim().toUpperCase();
+    this.setState(s=>({clientModal:{...s.clientModal, data:{...s.clientModal.data,[field]:nextValue}}}));
+  }
   saveClient = async () => {
     if(!this.isAdmin()) return;
     const m = this.state.clientModal;
     if(!m.data.nome.trim()){ this.showToast('Informe o nome do cliente.','error'); return; }
-    const dataOut = {...m.data, sellbot:m.data.sellbot==='true', ativo:m.data.ativo==='true'};
+    const dataOut = {...m.data, whatsapp:this.formatWhatsApp(m.data.whatsapp), google_tag_manager:(m.data.google_tag_manager || '').trim().toUpperCase(), sellbot:m.data.sellbot==='true', ativo:m.data.ativo==='true'};
     if(this.hasSupabase()){
       try{
         const db = this.db();
@@ -554,7 +604,14 @@ class Component extends DCLogic {
   };
   deleteClient = async (id) => {
     if(!this.isAdmin()) return;
-    if(!window.confirm('Excluir este cliente e todas as suas LPs?')) return;
+    this.openConfirmModal({
+      title:'Excluir cliente',
+      message:'Excluir este cliente e todas as suas LPs? Esta ação não pode ser desfeita.',
+      confirmLabel:'Excluir',
+      onConfirm:()=>this.performDeleteClient(id),
+    });
+  };
+  performDeleteClient = async (id) => {
     if(this.hasSupabase()){
       try{
         const {error} = await this.db().from('clients').delete().eq('id', id);
@@ -608,7 +665,14 @@ class Component extends DCLogic {
   };
   deleteLp = async (id) => {
     if(!this.isAdmin()) return;
-    if(!window.confirm('Excluir esta landing page?')) return;
+    this.openConfirmModal({
+      title:'Excluir landing page',
+      message:'Excluir esta landing page? Esta ação não pode ser desfeita.',
+      confirmLabel:'Excluir',
+      onConfirm:()=>this.performDeleteLp(id),
+    });
+  };
+  performDeleteLp = async (id) => {
     if(this.hasSupabase()){
       try{
         const {error} = await this.db().from('landing_pages').delete().eq('id', id);
@@ -679,6 +743,35 @@ class Component extends DCLogic {
     this.showToast('Status do usuário atualizado.');
   };
 
+  deleteUser = async (id) => {
+    if(!this.isAdmin()) return;
+    const target = this.state.users.find(u=>u.id===id);
+    if(!target) return;
+    if(this.state.currentUser && this.state.currentUser.id===id){
+      this.showToast('Nao e possivel excluir seu proprio usuario.','error');
+      return;
+    }
+    this.openConfirmModal({
+      title:'Excluir usuario',
+      message:'Excluir o usuario '+target.nome+'? Ele perdera acesso ao sistema.',
+      confirmLabel:'Excluir',
+      onConfirm:()=>this.performDeleteUser(id),
+    });
+  };
+  performDeleteUser = async (id) => {
+    if(this.hasSupabase()){
+      try{
+        const {error} = await this.db().from('profiles').delete().eq('id', id);
+        if(error) throw error;
+      }catch(e){
+        this.showToast('Nao foi possivel excluir o usuario no Supabase.','error');
+        return;
+      }
+    }
+    this.setState(s=>({users:s.users.filter(u=>u.id!==id)}));
+    this.showToast('Usuario excluido.');
+  };
+
   weeklyBuckets(){
     const lps = this.state.lps;
     const today = new Date();
@@ -697,6 +790,8 @@ class Component extends DCLogic {
   mapClient(c){
     return {...c,
       sellbotLabel: c.sellbot?'Sim':'Não', ativoLabel: c.ativo?'Ativo':'Inativo',
+      whatsapp: this.formatWhatsApp(c.whatsapp),
+      googleTagManagerLabel: c.google_tag_manager || '—',
       statusBg: c.ativo?'#dff6f2':'#fbeae8', statusFg: c.ativo?'#00877f':'#c0392b',
       created_fmt: this.formatDate(c.created_at),
       onSelect: ()=>this.selectClient(c.id), onEdit: ()=>this.openEditClient(c), onDelete: ()=>this.deleteClient(c.id),
@@ -716,6 +811,7 @@ class Component extends DCLogic {
       ativoLabel: u.ativo?'Ativo':'Inativo', roleLabel: u.role==='admin'?'Admin':'Mídia',
       statusBg: u.ativo?'#dff6f2':'#fbeae8', statusFg: u.ativo?'#00877f':'#c0392b',
       onToggleActive: ()=>this.toggleUserActive(u.id),
+      onDelete: ()=>this.deleteUser(u.id),
     };
   }
 
@@ -739,7 +835,7 @@ class Component extends DCLogic {
     const navActive = 'background:var(--teal-tint);color:var(--teal-dark);font-weight:600;';
     const navStyle = (active) => navBase + (active?navActive:'');
 
-    const clientFieldNames = ['nome','nome_divulgacao','nome_contato','whatsapp','endereco','sellbot','ativo'];
+    const clientFieldNames = ['nome','nome_divulgacao','nome_contato','whatsapp','endereco','google_tag_manager','sellbot','ativo'];
     const clientSetters = {};
     clientFieldNames.forEach(f=>{ clientSetters['setClient_'+f] = (e)=>this.updateClientModalField(f, e.target.value); });
 
@@ -792,6 +888,14 @@ class Component extends DCLogic {
 
       userModal: s.userModal, isUserModalOpen: !!s.userModal,
       closeUserModal: this.closeUserModal, saveUser: this.saveUser, ...userSetters,
+
+      confirmModal: s.confirmModal, isConfirmModalOpen: !!s.confirmModal,
+      confirmTitle: s.confirmModal ? s.confirmModal.title : '',
+      confirmMessage: s.confirmModal ? s.confirmModal.message : '',
+      confirmLabel: s.confirmModal ? s.confirmModal.confirmLabel : 'Confirmar',
+      confirmBg: s.confirmModal && s.confirmModal.danger ? '#c0392b' : '#00877f',
+      closeConfirmModal: this.closeConfirmModal,
+      confirmModalAction: this.confirmModalAction,
 
       toast: s.toast, hasToast: !!s.toast,
       toastMsg: s.toast ? s.toast.msg : '',

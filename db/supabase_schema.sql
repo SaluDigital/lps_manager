@@ -34,11 +34,15 @@ create table if not exists public.clients (
   nome_contato text not null default '',
   whatsapp text not null default '',
   endereco text not null default '',
+  google_tag_manager text not null default '',
   sellbot boolean not null default false,
   ativo boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.clients
+  add column if not exists google_tag_manager text not null default '';
 
 create table if not exists public.landing_pages (
   id uuid primary key default gen_random_uuid(),
@@ -170,6 +174,12 @@ on public.profiles for update
 to authenticated
 using (public.is_admin())
 with check (public.is_admin());
+
+drop policy if exists "profiles_delete_admin" on public.profiles;
+create policy "profiles_delete_admin"
+on public.profiles for delete
+to authenticated
+using (public.is_admin());
 
 drop policy if exists "clients_select_active_users" on public.clients;
 create policy "clients_select_active_users"
