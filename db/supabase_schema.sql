@@ -152,6 +152,37 @@ create trigger guard_landing_page_update
 before update on public.landing_pages
 for each row execute function public.guard_landing_page_update();
 
+create or replace function public.guard_client_update()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if public.is_admin() then
+    return new;
+  end if;
+
+  if new.nome is distinct from old.nome
+    or new.nome_divulgacao is distinct from old.nome_divulgacao
+    or new.nome_contato is distinct from old.nome_contato
+    or new.whatsapp is distinct from old.whatsapp
+    or new.endereco is distinct from old.endereco
+    or new.google_tag_manager is distinct from old.google_tag_manager
+    or new.sellbot is distinct from old.sellbot
+    or new.created_at is distinct from old.created_at then
+    raise exception 'Somente administradores podem editar campos do cliente alem do status.';
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists guard_client_update on public.clients;
+create trigger guard_client_update
+before update on public.clients
+for each row execute function public.guard_client_update();
+
 alter table public.profiles enable row level security;
 alter table public.clients enable row level security;
 alter table public.landing_pages enable row level security;
@@ -194,11 +225,12 @@ to authenticated
 with check (public.is_admin());
 
 drop policy if exists "clients_update_admin" on public.clients;
-create policy "clients_update_admin"
+drop policy if exists "clients_update_active_users" on public.clients;
+create policy "clients_update_active_users"
 on public.clients for update
 to authenticated
-using (public.is_admin())
-with check (public.is_admin());
+using (public.is_active_user())
+with check (public.is_active_user());
 
 drop policy if exists "clients_delete_admin" on public.clients;
 create policy "clients_delete_admin"

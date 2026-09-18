@@ -237,7 +237,10 @@ input,select,button{font-family:'Inter',sans-serif;}
                   <div style="font-size:13px;color:var(--gray-700);">{{ c.nome_contato }}</div>
                   <div style="font-size:13px;color:var(--gray-700);">{{ c.whatsapp }}</div>
                   <div style="font-size:12px;color:var(--gray-500);">Sellbot: {{ c.sellbotLabel }}</div>
-                  <div style="font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;background:{{ c.statusBg }};color:{{ c.statusFg }};text-align:center;">{{ c.ativoLabel }}</div>
+                  <sc-if value="{{ isNotAdminUser }}">
+                    <div></div>
+                  </sc-if>
+                  <button onClick="{{ c.onToggleActive }}" style="border:1px solid {{ c.statusBg }};background:{{ c.statusBg }};color:{{ c.statusFg }};border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:center;justify-self:stretch;">{{ c.ativoLabel }}</button>
                   <sc-if value="{{ isAdminUser }}" hint-placeholder-val="{{ true }}">
                     <div style="display:flex;gap:8px;justify-content:flex-end;">
                       <button onClick="{{ c.onEdit }}" style="border:1px solid var(--border);background:#fff;border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;">Editar</button>
@@ -260,7 +263,7 @@ input,select,button{font-family:'Inter',sans-serif;}
                   <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:21px;">{{ selectedClient.nome }}</div>
                 </div>
                 <div style="display:flex;gap:8px;align-items:center;">
-                  <div style="font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;background:{{ selectedClient.statusBg }};color:{{ selectedClient.statusFg }};">{{ selectedClient.ativoLabel }}</div>
+                  <button onClick="{{ selectedClient.onToggleActive }}" style="border:1px solid {{ selectedClient.statusBg }};background:{{ selectedClient.statusBg }};color:{{ selectedClient.statusFg }};border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;">{{ selectedClient.ativoLabel }}</button>
                   <sc-if value="{{ isAdminUser }}">
                     <button onClick="{{ selectedClient.onEdit }}" style="border:1px solid var(--border);background:#fff;border-radius:8px;padding:7px 14px;font-size:13px;cursor:pointer;">Editar</button>
                     <button onClick="{{ selectedClient.onDelete }}" style="border:1px solid var(--danger-tint);background:var(--danger-tint);color:var(--danger);border-radius:8px;padding:7px 14px;font-size:13px;cursor:pointer;">Excluir</button>
@@ -294,7 +297,10 @@ input,select,button{font-family:'Inter',sans-serif;}
                       <a href="{{ l.link }}" target="_blank" style="font-size:13px;color:var(--teal-dark);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ l.link }}</a>
                       <div style="font-size:13px;color:var(--gray-700);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ l.frase_whatsapp }}</div>
                     </div>
-                    <button onClick="{{ l.onToggleStatus }}" style="border:1px solid {{ l.statusBg }};background:{{ l.statusBg }};color:{{ l.statusFg }};border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;">{{ l.statusLabel }}</button>
+                    <sc-if value="{{ isNotAdminUser }}">
+                      <div></div>
+                    </sc-if>
+                    <button onClick="{{ l.onToggleStatus }}" style="border:1px solid {{ l.statusBg }};background:{{ l.statusBg }};color:{{ l.statusFg }};border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;justify-self:stretch;">{{ l.statusLabel }}</button>
                     <sc-if value="{{ isAdminUser }}" hint-placeholder-val="{{ true }}">
                       <div style="display:flex;gap:8px;justify-content:flex-end;">
                         <button onClick="{{ l.onEdit }}" style="border:1px solid var(--border);background:#fff;border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;">Editar</button>
@@ -726,6 +732,25 @@ class Component extends DCLogic {
     this.showToast('Cliente excluído.');
   };
 
+  toggleClientActive = async (id) => {
+    const u = this.state.currentUser;
+    if(!u) return;
+    const current = this.state.clients.find(c=>c.id===id);
+    if(!current) return;
+    const nextActive = !current.ativo;
+    if(this.hasSupabase()){
+      try{
+        const {error} = await this.db().from('clients').update({ativo:nextActive}).eq('id', id);
+        if(error) throw error;
+      }catch(e){
+        this.showToast('Nao foi possivel atualizar o status do cliente no Supabase.','error');
+        return;
+      }
+    }
+    this.setState(s=>({clients:s.clients.map(c=>c.id===id?{...c,ativo:nextActive}:c)}));
+    this.showToast('Status do cliente atualizado.');
+  };
+
   openNewLp = (clientId) => { if(!this.isAdmin()) return; this.setState({lpModal:{mode:'new', cliente_id:clientId, data:{nome:'',status:'ativo',link:'',frase_whatsapp:''}}}); };
   openEditLp = (lp) => { if(!this.isAdmin()) return; this.setState({lpModal:{mode:'edit', id:lp.id, cliente_id:lp.cliente_id, data:{nome:lp.nome,status:lp.status,link:lp.link,frase_whatsapp:lp.frase_whatsapp}}}); };
   closeLpModal = () => this.setState({lpModal:null});
@@ -884,6 +909,7 @@ class Component extends DCLogic {
       statusBg: c.ativo?'#dff6f2':'#fbeae8', statusFg: c.ativo?'#00877f':'#c0392b',
       created_fmt: this.formatDate(c.created_at),
       onSelect: ()=>this.selectClient(c.id), onEdit: ()=>this.openEditClient(c), onDelete: ()=>this.deleteClient(c.id),
+      onToggleActive: (e)=>{ if(e && e.stopPropagation) e.stopPropagation(); this.toggleClientActive(c.id); },
       onNewLp: ()=>this.openNewLp(c.id),
     };
   }
@@ -953,7 +979,7 @@ class Component extends DCLogic {
     return {
       accentColor: this.props.accentColor ?? '#00877f',
 
-      isLoggedIn: !!user, loggedOut: !user, isAdminUser: this.isAdmin(),
+      isLoggedIn: !!user, loggedOut: !user, isAdminUser: this.isAdmin(), isNotAdminUser: !!user && !this.isAdmin(),
       currentUser: user ? {...user, roleLabel: user.role==='admin'?'Administrador':'Mídia'} : null,
       loginEmail: s.loginEmail, loginPassword: s.loginPassword, loginError: s.loginError, hasLoginError: !!s.loginError,
       setLoginEmail: (e)=>this.setState({loginEmail:e.target.value}),
