@@ -687,7 +687,8 @@ class Component extends DCLogic {
           this.showToast('Cliente atualizado.');
         }
       }catch(e){
-        this.showToast('Nao foi possivel salvar no Supabase.','error');
+        console.error('Erro ao salvar cliente no Supabase:', e);
+        this.showToast('Nao foi possivel salvar: '+(e.message || 'erro no Supabase.'),'error');
       }
       return;
     }
