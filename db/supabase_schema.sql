@@ -152,6 +152,32 @@ create trigger guard_landing_page_update
 before update on public.landing_pages
 for each row execute function public.guard_landing_page_update();
 
+create or replace function public.guard_landing_page_active_client()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if new.status = 'ativo'
+    and not exists (
+      select 1
+      from public.clients c
+      where c.id = new.cliente_id
+        and c.ativo = true
+    ) then
+    raise exception 'LP so pode ser ativada se o cliente estiver ativo.';
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists guard_landing_page_active_client on public.landing_pages;
+create trigger guard_landing_page_active_client
+before insert or update of cliente_id, status on public.landing_pages
+for each row execute function public.guard_landing_page_active_client();
+
 create or replace function public.guard_client_update()
 returns trigger
 language plpgsql
@@ -182,6 +208,29 @@ drop trigger if exists guard_client_update on public.clients;
 create trigger guard_client_update
 before update on public.clients
 for each row execute function public.guard_client_update();
+
+create or replace function public.inactivate_client_landing_pages()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if old.ativo = true and new.ativo = false then
+    update public.landing_pages
+    set status = 'inativo'
+    where cliente_id = new.id
+      and status = 'ativo';
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists inactivate_client_landing_pages on public.clients;
+create trigger inactivate_client_landing_pages
+after update of ativo on public.clients
+for each row execute function public.inactivate_client_landing_pages();
 
 alter table public.profiles enable row level security;
 alter table public.clients enable row level security;
