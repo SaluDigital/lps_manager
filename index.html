@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>LPs Manager 1.0</title>
+<meta name="googlebot" content="noindex,nofollow,noarchive">
+<title>LP Manager</title>
 <link rel="icon" type="image/webp" href="assets/favicon.webp">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -17,7 +18,8 @@ window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXB
 <x-dc>
 <helmet>
 <meta name="robots" content="noindex,nofollow">
-<title>LPs Manager 1.0</title>
+<meta name="googlebot" content="noindex,nofollow,noarchive">
+<title>LP Manager</title>
 <link rel="icon" type="image/webp" href="assets/favicon.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -416,7 +418,9 @@ input,select,button{font-family:'Inter',sans-serif;}
     <div style="position:fixed;inset:0;background:rgba(20,24,28,0.48);display:flex;align-items:center;justify-content:center;padding:24px;z-index:70;">
       <div style="width:100%;max-width:420px;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:0 24px 70px -28px rgba(20,24,28,0.45);padding:24px;">
         <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:18px;color:var(--ink);margin-bottom:8px;">{{ confirmTitle }}</div>
-        <div style="font-size:14px;line-height:1.45;color:var(--gray-700);margin-bottom:22px;">{{ confirmMessage }}</div>
+        <sc-if value="{{ hasConfirmMessage }}">
+          <div style="font-size:14px;line-height:1.45;color:var(--gray-700);margin-bottom:22px;">{{ confirmMessage }}</div>
+        </sc-if>
         <div style="display:flex;gap:10px;justify-content:flex-end;">
           <button onClick="{{ closeConfirmModal }}" style="border:1px solid var(--border);background:#fff;color:var(--gray-700);border-radius:8px;padding:10px 16px;font-size:14px;cursor:pointer;">Cancelar</button>
           <button onClick="{{ confirmModalAction }}" style="border:1px solid {{ confirmBg }};background:{{ confirmBg }};color:#fff;border-radius:8px;padding:10px 16px;font-size:14px;font-weight:600;cursor:pointer;">{{ confirmLabel }}</button>
@@ -743,7 +747,7 @@ class Component extends DCLogic {
       const lpText = activeLpCount === 1 ? '1 LP ativa' : activeLpCount+' LPs ativas';
       this.openConfirmModal({
         title:'Inativar cliente',
-        message:'Este cliente possui '+lpText+'. Ao inativar o cliente, todas as LPs dele tambem serao inativadas.',
+        message: activeLpCount > 0 ? 'Este cliente possui '+lpText+'. Ao inativar o cliente, todas as LPs dele tambem serao inativadas.' : '',
         confirmLabel:'Inativar',
         onConfirm:()=>this.performToggleClientActive(id, nextActive),
       });
@@ -1063,6 +1067,7 @@ class Component extends DCLogic {
       confirmModal: s.confirmModal, isConfirmModalOpen: !!s.confirmModal,
       confirmTitle: s.confirmModal ? s.confirmModal.title : '',
       confirmMessage: s.confirmModal ? s.confirmModal.message : '',
+      hasConfirmMessage: !!(s.confirmModal && s.confirmModal.message),
       confirmLabel: s.confirmModal ? s.confirmModal.confirmLabel : 'Confirmar',
       confirmBg: s.confirmModal && s.confirmModal.danger ? '#c0392b' : '#00877f',
       closeConfirmModal: this.closeConfirmModal,
