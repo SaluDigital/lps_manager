@@ -1000,7 +1000,10 @@ class Component extends DCLogic {
     const dashResults = dashSearch ? s.clients.filter(c=>c.nome.toLowerCase().includes(dashSearch)).slice(0,6).map(c=>this.mapClient(c)) : [];
 
     const clientsSearch = s.clientsSearchTerm.trim().toLowerCase();
-    const clientsFiltered = s.clients.filter(c=>!clientsSearch || c.nome.toLowerCase().includes(clientsSearch)).map(c=>this.mapClient(c));
+    const clientsFiltered = s.clients
+      .filter(c=>!clientsSearch || c.nome.toLowerCase().includes(clientsSearch))
+      .sort((a,b)=>a.nome.localeCompare(b.nome, 'pt-BR', {sensitivity:'base'}))
+      .map(c=>this.mapClient(c));
 
     const rawSelectedClient = s.selectedClientId ? clientById[s.selectedClientId] : null;
     const selectedClient = rawSelectedClient ? this.mapClient(rawSelectedClient) : null;
