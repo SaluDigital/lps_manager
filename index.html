@@ -231,16 +231,18 @@ input,select,button{font-family:'Inter',sans-serif;}
           <input type="text" value="{{ clientsSearchTerm }}" onChange="{{ setClientsSearchTerm }}" placeholder="Buscar por nome do cliente..." style="width:100%;max-width:420px;padding:11px 14px;border:1px solid var(--border);border-radius:10px;font-size:14px;outline:none;">
           <div style="background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;">
             <sc-if value="{{ hasClientsResults }}" hint-placeholder-val="{{ true }}">
-              <div style="display:grid;grid-template-columns:2fr 1.4fr 1.2fr 90px 90px 100px;gap:12px;align-items:center;padding:12px 20px;border-bottom:1px solid var(--border);background:var(--bg);font-size:11px;color:var(--gray-500);font-weight:600;text-transform:uppercase;letter-spacing:.04em;">
+              <div style="display:grid;grid-template-columns:{{ clientsListGridColumns }};gap:12px;align-items:center;padding:12px 20px;border-bottom:1px solid var(--border);background:var(--bg);font-size:11px;color:var(--gray-500);font-weight:600;text-transform:uppercase;letter-spacing:.04em;">
                 <div>Cliente</div>
                 <div>Contato</div>
                 <div>WhatsApp</div>
                 <div style="text-align:center;">Sellbot</div>
                 <div style="text-align:center;">Status</div>
-                <div style="text-align:right;">A&ccedil;&atilde;o</div>
+                <sc-if value="{{ isAdminUser }}" hint-placeholder-val="{{ true }}">
+                  <div style="text-align:right;">A&ccedil;&atilde;o</div>
+                </sc-if>
               </div>
               <sc-for list="{{ clientsFiltered }}" as="c" hint-placeholder-count="4">
-                <div onClick="{{ c.onSelect }}" style="display:grid;grid-template-columns:2fr 1.4fr 1.2fr 90px 90px 100px;gap:12px;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border);cursor:pointer;" style-hover="background:var(--bg);">
+                <div onClick="{{ c.onSelect }}" style="display:grid;grid-template-columns:{{ clientsListGridColumns }};gap:12px;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border);cursor:pointer;" style-hover="background:var(--bg);">
                   <div>
                     <div style="font-weight:600;font-size:14px;">{{ c.nome }}</div>
                   </div>
@@ -259,9 +261,6 @@ input,select,button{font-family:'Inter',sans-serif;}
                     <div style="display:flex;gap:8px;justify-content:flex-end;">
                       <button onClick="{{ c.onEdit }}" style="border:1px solid var(--border);background:#fff;border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;">Editar</button>
                     </div>
-                  </sc-if>
-                  <sc-if value="{{ isNotAdminUser }}">
-                    <div></div>
                   </sc-if>
                 </div>
               </sc-for>
@@ -1041,6 +1040,7 @@ class Component extends DCLogic {
       accentColor: this.props.accentColor ?? '#00877f',
 
       isLoggedIn: !!user, loggedOut: !user, isAdminUser: this.isAdmin(), isNotAdminUser: !!user && !this.isAdmin(),
+      clientsListGridColumns: this.isAdmin() ? '2fr 1.4fr 1.2fr 90px 90px 100px' : '2fr 1.4fr 1.2fr 90px 90px',
       currentUser: user ? {...user, roleLabel: user.role==='admin'?'Administrador':'Mídia'} : null,
       loginEmail: s.loginEmail, loginPassword: s.loginPassword, loginError: s.loginError, hasLoginError: !!s.loginError,
       setLoginEmail: (e)=>this.setState({loginEmail:e.target.value}),
