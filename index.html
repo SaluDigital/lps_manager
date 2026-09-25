@@ -127,12 +127,12 @@ input,select,button{font-family:'Inter',sans-serif;}
             </div>
             <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:14px;transition:transform .15s;min-width:0;" style-hover="transform:translateY(-2px);">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
-                <div class="metric-number" style="font-family:'Poppins',sans-serif;font-weight:700;font-size:30px;line-height:1;">{{ metricGtmClients }}</div>
+                <div class="metric-number" style="font-family:'Poppins',sans-serif;font-weight:700;font-size:30px;line-height:1;">{{ metricSellbotClients }}</div>
                 <div style="width:42px;height:42px;border-radius:50%;background:#fff0e9;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f37b4d" stroke-width="2"><path d="M4 7h16"/><path d="M7 4v16"/><path d="M17 4v16"/><path d="M4 17h16"/></svg>
                 </div>
               </div>
-              <div style="font-size:12px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;">GTM configurado</div>
+              <div style="font-size:12px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;">Clientes com Sellbot</div>
             </div>
           </div>
 
@@ -231,6 +231,14 @@ input,select,button{font-family:'Inter',sans-serif;}
           <input type="text" value="{{ clientsSearchTerm }}" onChange="{{ setClientsSearchTerm }}" placeholder="Buscar por nome do cliente..." style="width:100%;max-width:420px;padding:11px 14px;border:1px solid var(--border);border-radius:10px;font-size:14px;outline:none;">
           <div style="background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;">
             <sc-if value="{{ hasClientsResults }}" hint-placeholder-val="{{ true }}">
+              <div style="display:grid;grid-template-columns:2fr 1.4fr 1.2fr 90px 90px 100px;gap:12px;align-items:center;padding:12px 20px;border-bottom:1px solid var(--border);background:var(--bg);font-size:11px;color:var(--gray-500);font-weight:600;text-transform:uppercase;letter-spacing:.04em;">
+                <div>Cliente</div>
+                <div>Contato</div>
+                <div>WhatsApp</div>
+                <div style="text-align:center;">Sellbot</div>
+                <div style="text-align:center;">Status</div>
+                <div style="text-align:right;">A&ccedil;&atilde;o</div>
+              </div>
               <sc-for list="{{ clientsFiltered }}" as="c" hint-placeholder-count="4">
                 <div onClick="{{ c.onSelect }}" style="display:grid;grid-template-columns:2fr 1.4fr 1.2fr 90px 90px 100px;gap:12px;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border);cursor:pointer;" style-hover="background:var(--bg);">
                   <div>
@@ -238,15 +246,22 @@ input,select,button{font-family:'Inter',sans-serif;}
                   </div>
                   <div style="font-size:13px;color:var(--gray-700);">{{ c.nome_contato }}</div>
                   <div style="font-size:13px;color:var(--gray-700);">{{ c.whatsapp }}</div>
-                  <div style="font-size:12px;color:var(--gray-500);">Sellbot: {{ c.sellbotLabel }}</div>
-                  <sc-if value="{{ isNotAdminUser }}">
-                    <div></div>
-                  </sc-if>
+                  <div style="display:flex;align-items:center;justify-content:center;">
+                    <sc-if value="{{ c.sellbot }}" hint-placeholder-val="{{ true }}">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-label="Sellbot sim"><path d="M20 6 9 17l-5-5"/></svg>
+                    </sc-if>
+                    <sc-if value="{{ c.noSellbot }}">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-label="Sellbot nao"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>
+                    </sc-if>
+                  </div>
                   <button onClick="{{ c.onToggleActive }}" style="border:1px solid {{ c.statusBg }};background:{{ c.statusBg }};color:{{ c.statusFg }};border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:center;justify-self:stretch;">{{ c.ativoLabel }}</button>
                   <sc-if value="{{ isAdminUser }}" hint-placeholder-val="{{ true }}">
                     <div style="display:flex;gap:8px;justify-content:flex-end;">
                       <button onClick="{{ c.onEdit }}" style="border:1px solid var(--border);background:#fff;border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;">Editar</button>
                     </div>
+                  </sc-if>
+                  <sc-if value="{{ isNotAdminUser }}">
+                    <div></div>
                   </sc-if>
                 </div>
               </sc-for>
@@ -276,7 +291,14 @@ input,select,button{font-family:'Inter',sans-serif;}
                 <div style="min-width:0;"><div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Contato</div><div style="font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ selectedClient.nome_contato }}</div></div>
                 <div style="min-width:0;"><div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">WhatsApp</div><div style="font-size:14px;font-weight:500;white-space:nowrap;">{{ selectedClient.whatsapp }}</div></div>
                 <div style="min-width:0;"><div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Endereço</div><div style="font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ selectedClient.endereco }}</div></div>
-                <div style="min-width:0;"><div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Sellbot</div><div style="font-size:14px;font-weight:500;white-space:nowrap;">{{ selectedClient.sellbotLabel }}</div></div>
+                <div style="min-width:0;"><div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Sellbot</div><div style="height:20px;display:flex;align-items:center;">
+                  <sc-if value="{{ selectedClient.sellbot }}" hint-placeholder-val="{{ true }}">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-label="Sellbot sim"><path d="M20 6 9 17l-5-5"/></svg>
+                  </sc-if>
+                  <sc-if value="{{ selectedClient.noSellbot }}">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-label="Sellbot nao"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>
+                  </sc-if>
+                </div></div>
                 <div style="min-width:0;"><div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Google Tag Manager</div><div style="font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ selectedClient.googleTagManagerLabel }}</div></div>
               </div>
             </div>
@@ -473,7 +495,7 @@ class Component extends DCLogic {
     searchTerm:'', clientsSearchTerm:'', selectedClientId:null, toast:null,
     loginEmail:'', loginPassword:'', loginError:'',
     clientModal:null, lpModal:null, userModal:null, confirmModal:null,
-    dashboardCounts:{totalClients:0,totalLps:0,activeLps:0,inactiveLps:0,gtmClients:0},
+    dashboardCounts:{totalClients:0,totalLps:0,activeLps:0,inactiveLps:0,sellbotClients:0},
   };
 
   async componentDidMount(){
@@ -507,7 +529,7 @@ class Component extends DCLogic {
       totalLps: lps.length,
       activeLps: lps.filter(l=>l.status==='ativo').length,
       inactiveLps: lps.filter(l=>l.status==='inativo').length,
-      gtmClients: clients.filter(c=>(c.google_tag_manager || '').trim()).length,
+      sellbotClients: clients.filter(c=>c.sellbot && c.ativo).length,
     };
   }
 
@@ -939,6 +961,7 @@ class Component extends DCLogic {
   mapClient(c){
     const clientLps = this.state.lps.filter(l=>l.cliente_id===c.id);
     return {...c,
+      sellbot: !!c.sellbot, noSellbot: !c.sellbot,
       sellbotLabel: c.sellbot?'Sim':'Não', ativoLabel: c.ativo?'Ativo':'Inativo',
       whatsapp: this.formatWhatsApp(c.whatsapp),
       googleTagManagerLabel: c.google_tag_manager || '—',
@@ -985,7 +1008,7 @@ class Component extends DCLogic {
     const selectedClientLps = selectedClient ? s.lps.filter(l=>l.cliente_id===selectedClient.id).sort((a,b)=>b.created_at.localeCompare(a.created_at)).map(l=>this.mapLp(l)) : [];
     const activeLpsCount = s.lps.filter(l=>l.status==='ativo').length;
     const inactiveLpsCount = s.lps.filter(l=>l.status==='inativo').length;
-    const gtmClientsCount = s.clients.filter(c=>(c.google_tag_manager || '').trim()).length;
+    const sellbotClientsCount = s.clients.filter(c=>c.sellbot && c.ativo).length;
     const dashboardCounts = s.dashboardCounts || {};
     const recentClients = s.clients
       .slice()
@@ -1030,13 +1053,12 @@ class Component extends DCLogic {
 
       totalLps: s.lps.length, activeLps: activeLpsCount, inactiveLps: inactiveLpsCount,
       totalClients: s.clients.length,
-      gtmClients: gtmClientsCount,
       metricTotalClients: dashboardCounts.totalClients,
       metricTotalLps: dashboardCounts.totalLps,
       metricActiveLps: dashboardCounts.activeLps,
       metricInactiveLps: dashboardCounts.inactiveLps,
-      metricGtmClients: dashboardCounts.gtmClients,
-      sellbotClients: s.clients.filter(c=>c.sellbot).length,
+      metricSellbotClients: dashboardCounts.sellbotClients,
+      sellbotClients: sellbotClientsCount,
       avgLpsPerClient: s.clients.length ? (s.lps.length / s.clients.length).toFixed(1) : '0.0',
       recentClients, hasRecentClients: recentClients.length>0, noRecentClients: recentClients.length===0,
       recentLps, hasRecentLps: recentLps.length>0, noRecentLps: recentLps.length===0,
