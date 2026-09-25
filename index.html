@@ -425,7 +425,12 @@ input,select,button{font-family:'Inter',sans-serif;}
         <div style="display:flex;flex-direction:column;gap:14px;">
           <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">Nome</label><input type="text" value="{{ userModal.data.nome }}" onChange="{{ setUser_nome }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;"></div>
           <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">E-mail</label><input type="email" value="{{ userModal.data.email }}" onChange="{{ setUser_email }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;"></div>
-          <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">Senha inicial</label><input type="text" value="{{ userModal.data.senha }}" onChange="{{ setUser_senha }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;"></div>
+          <sc-if value="{{ isSupabaseMode }}">
+            <div style="font-size:12px;line-height:1.45;color:var(--gray-600);background:var(--gray-100);border:1px solid var(--border);border-radius:8px;padding:10px 12px;">Este cadastro cria apenas o perfil do sistema. Para liberar o acesso, crie tambem o usuario em Authentication > Users no Supabase com o mesmo e-mail.</div>
+          </sc-if>
+          <sc-if value="{{ isLocalMode }}">
+            <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">Senha inicial</label><input type="text" value="{{ userModal.data.senha }}" onChange="{{ setUser_senha }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;"></div>
+          </sc-if>
           <div><label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">Perfil</label>
             <select value="{{ userModal.data.role }}" onChange="{{ setUser_role }}" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;"><option value="midia">Mídia</option><option value="admin">Admin</option></select>
           </div>
@@ -638,6 +643,20 @@ class Component extends DCLogic {
     this._toastTimer = setTimeout(()=>this.setState({toast:null}), 2600);
   }
 
+  supabaseLoginMessage(error){
+    const msg = String((error && error.message) || '').toLowerCase();
+    if(msg.includes('invalid login credentials')){
+      return 'Login nao encontrado no Supabase Auth ou senha incorreta. Confira Authentication > Users e o perfil cadastrado.';
+    }
+    if(msg.includes('email not confirmed')){
+      return 'E-mail ainda nao confirmado no Supabase Auth.';
+    }
+    if(msg.includes('fetch') || msg.includes('network') || msg.includes('failed to fetch')){
+      return 'Falha de conexao com o Supabase. Tente novamente em instantes.';
+    }
+    return 'Nao foi possivel entrar. Confira o cadastro no Supabase Auth e tente novamente.';
+  }
+
   login = async () => {
     const email = this.state.loginEmail.trim().toLowerCase();
     const pass = this.state.loginPassword;
@@ -650,7 +669,7 @@ class Component extends DCLogic {
         if(error) throw error;
         await this.loadSupabaseUser(data.user);
       }catch(e){
-        this.setState({loginError:'Credenciais invalidas ou falha ao conectar no Supabase.'});
+        this.setState({loginError:this.supabaseLoginMessage(e)});
       }
       return;
     }
@@ -899,15 +918,17 @@ class Component extends DCLogic {
   saveUser = async () => {
     if(!this.isAdmin()) return;
     const d = this.state.userModal.data;
-    if(!d.nome.trim() || !d.email.trim() || !d.senha.trim()){ this.showToast('Preencha todos os campos.','error'); return; }
-    if(this.hasSupabase()){
+    const usingSupabase = this.hasSupabase();
+    if(!d.nome.trim() || !d.email.trim()){ this.showToast('Preencha nome e e-mail.','error'); return; }
+    if(!usingSupabase && !d.senha.trim()){ this.showToast('Preencha todos os campos.','error'); return; }
+    if(usingSupabase){
       try{
         const payload = {nome:d.nome.trim(), email:d.email.trim().toLowerCase(), role:d.role, ativo:true};
         const {data, error} = await this.db().from('profiles').insert(payload).select('*').single();
         if(error) throw error;
         const nu = this.normalizeProfile(data);
         this.setState(s=>({users:[...s.users, nu], userModal:null}));
-        this.showToast('Perfil cadastrado. Crie o login em Authentication > Users no Supabase.');
+        this.showToast('Perfil cadastrado. Agora crie o usuario em Authentication > Users.');
       }catch(e){
         this.showToast('Nao foi possivel cadastrar o perfil no Supabase.','error');
       }
@@ -1093,6 +1114,7 @@ class Component extends DCLogic {
       closeLpModal: this.closeLpModal, saveLp: this.saveLp, ...lpSetters,
 
       userModal: s.userModal, isUserModalOpen: !!s.userModal,
+      isSupabaseMode: this.hasSupabase(), isLocalMode: !this.hasSupabase(),
       closeUserModal: this.closeUserModal, saveUser: this.saveUser, ...userSetters,
 
       confirmModal: s.confirmModal, isConfirmModalOpen: !!s.confirmModal,
