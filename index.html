@@ -50,6 +50,10 @@ input,select,button{font-family:'Inter',sans-serif;}
           <label style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">Senha</label>
           <input type="password" value="{{ loginPassword }}" onChange="{{ setLoginPassword }}" placeholder="********" style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:10px;font-size:14px;outline:none;">
         </div>
+        <label style="display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;background:#fff;">
+          <input type="checkbox" checked="{{ loginRobotChecked }}" onChange="{{ setLoginRobotChecked }}" style="width:18px;height:18px;accent-color:var(--teal);cursor:pointer;">
+          <span style="font-size:13px;color:var(--gray-700);font-weight:500;">N&atilde;o sou um rob&ocirc;</span>
+        </label>
         <sc-if value="{{ hasLoginError }}">
           <div style="background:var(--danger-tint);color:var(--danger);font-size:13px;padding:10px 12px;border-radius:8px;">{{ loginError }}</div>
         </sc-if>
@@ -491,7 +495,7 @@ class Component extends DCLogic {
       {id:'l12',cliente_id:'c1',nome:'LP Prótese Dentária',status:'ativo',link:'https://sorrisopremium.superdental.lp/protese',frase_whatsapp:'Olá! Quero informações sobre prótese dentária.',created_at:'2026-09-10'},
     ],
     searchTerm:'', clientsSearchTerm:'', selectedClientId:null, toast:null,
-    loginEmail:'', loginPassword:'', loginError:'',
+    loginEmail:'', loginPassword:'', loginError:'', loginRobotChecked:false,
     clientModal:null, lpModal:null, userModal:null, confirmModal:null,
     dashboardCounts:{totalClients:0,totalLps:0,activeLps:0,inactiveLps:0,sellbotClients:0},
   };
@@ -624,6 +628,7 @@ class Component extends DCLogic {
       screen:'dashboard',
       loginError:'',
       loginPassword:'',
+      loginRobotChecked:false,
     });
   }
 
@@ -637,6 +642,7 @@ class Component extends DCLogic {
     const email = this.state.loginEmail.trim().toLowerCase();
     const pass = this.state.loginPassword;
     if(!email || !pass){ this.setState({loginError:'Informe e-mail e senha.'}); return; }
+    if(!this.state.loginRobotChecked){ this.setState({loginError:'Confirme que voce nao e um robo.'}); return; }
     if(this.hasSupabase()){
       try{
         const db = this.db();
@@ -651,14 +657,14 @@ class Component extends DCLogic {
     const user = this.state.users.find(u=>u.email.toLowerCase()===email);
     if(!user){ this.setState({loginError:'Credenciais inválidas.'}); return; }
     if(!user.ativo){ this.setState({loginError:'Usuário inativo. Contate um administrador.'}); return; }
-    this.setState({currentUser:user, screen:'dashboard', loginError:'', loginPassword:''});
+    this.setState({currentUser:user, screen:'dashboard', loginError:'', loginPassword:'', loginRobotChecked:false});
     try{ localStorage.setItem('sd_session_email', user.email); }catch(e){}
   };
   logout = async () => {
     if(this.hasSupabase()){
       try{ await this.db().auth.signOut(); }catch(e){}
     }
-    this.setState({currentUser:null, screen:'login', loginEmail:'', loginPassword:''});
+    this.setState({currentUser:null, screen:'login', loginEmail:'', loginPassword:'', loginRobotChecked:false});
     try{ localStorage.removeItem('sd_session_email'); }catch(e){}
   };
   goto = (screen) => this.setState({screen, clientModal:null, lpModal:null, userModal:null, confirmModal:null});
@@ -1044,9 +1050,10 @@ class Component extends DCLogic {
       isLoggedIn: !!user, loggedOut: !user, isAdminUser: this.isAdmin(), isNotAdminUser: !!user && !this.isAdmin(),
       clientsListGridColumns: this.isAdmin() ? '2fr 1.4fr 1.2fr 90px 90px 100px' : '2fr 1.4fr 1.2fr 90px 90px',
       currentUser: user ? {...user, roleLabel: user.role==='admin'?'Administrador':'Mídia'} : null,
-      loginEmail: s.loginEmail, loginPassword: s.loginPassword, loginError: s.loginError, hasLoginError: !!s.loginError,
+      loginEmail: s.loginEmail, loginPassword: s.loginPassword, loginError: s.loginError, hasLoginError: !!s.loginError, loginRobotChecked: s.loginRobotChecked,
       setLoginEmail: (e)=>this.setState({loginEmail:e.target.value}),
       setLoginPassword: (e)=>this.setState({loginPassword:e.target.value}),
+      setLoginRobotChecked: (e)=>this.setState({loginRobotChecked:e.target.checked, loginError:''}),
       doLogin: this.login, doLogout: this.logout,
 
       isDashboard: s.screen==='dashboard', isClients: s.screen==='clients', isClientDetail: s.screen==='clientDetail', isUsers: s.screen==='users',
